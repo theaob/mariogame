@@ -4,6 +4,7 @@ import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 
+import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
@@ -14,12 +15,17 @@ public class Window {
     private String title;
     private static Window instance;
     private long glfwWindow;
+    private float r, g, b, a;
 
     private Window()
     {
         this.width = 1920;
         this.height = 1080;
         this.title = "Mario";
+        r = 1.0F;
+        g = 1.0F;
+        b = 1.0F;
+        a = 1.0F;
     }
 
     public static Window getInstance() {
@@ -31,8 +37,18 @@ public class Window {
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
+
         init();
         loop();
+
+        //Free the memory
+
+        glfwFreeCallbacks(glfwWindow);
+        glfwDestroyWindow(glfwWindow);
+
+        //Terminate GLFW
+        glfwTerminate();
+        glfwSetErrorCallback(null).free();
     }
 
     private void init() {
@@ -58,6 +74,16 @@ public class Window {
             throw new IllegalStateException("Failed to create GLFW window");
         }
 
+        //Set mouse callbacks
+        glfwSetCursorPosCallback(glfwWindow, MouseListener::mousePosCallback);
+        glfwSetMouseButtonCallback(glfwWindow, MouseListener::mouseButtonCallback);
+        glfwSetScrollCallback(glfwWindow, MouseListener::mouseScrollCallback);
+
+        //Set keyboard callbacks
+        glfwSetKeyCallback(glfwWindow, KeyListener::keyCallback);
+
+        //TODO: Set gamepad callbacks
+
         //Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         //Enable v-sync
@@ -80,8 +106,15 @@ public class Window {
             //poll events
             glfwPollEvents();
 
-            glClearColor(1.0f, 0.0f, 0.0f, 1.0f);
+            glClearColor(r,g,b,a);
             glClear(GL_COLOR_BUFFER_BIT);
+
+            if(KeyListener.isKeyPressed(GLFW_KEY_SPACE))
+            {
+                r = Math.max(r - 0.01f, 0);
+                g = Math.max(g - 0.01f, 0);
+                b = Math.max(b - 0.01f, 0);
+            }
 
             glfwSwapBuffers(glfwWindow);
         }
