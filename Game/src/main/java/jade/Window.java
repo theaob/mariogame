@@ -3,6 +3,7 @@ package jade;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+import util.Time;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -15,12 +16,14 @@ public class Window {
     private String title;
     private static Window instance;
     private long glfwWindow;
-    private float r, g, b, a;
+    protected float r, g, b, a;
+
+    private static Scene currentScene = null;
 
     private Window()
     {
-        this.width = 1920;
-        this.height = 1080;
+        this.width = 960;
+        this.height = 540;
         this.title = "Mario";
         r = 1.0F;
         g = 1.0F;
@@ -33,6 +36,22 @@ public class Window {
             instance = new Window();
         }
         return instance;
+    }
+
+    public static void changeScene(int newScene)
+    {
+        switch (newScene)
+        {
+            case 0:
+                currentScene = new LevelEditorScene();
+                break;
+            case 1:
+                currentScene = new LevelScene();
+                break;
+            default:
+                assert false : "Unknown scene " + newScene;
+                break;
+        }
     }
 
     public void run() {
@@ -98,9 +117,15 @@ public class Window {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        Window.changeScene(0);
     }
 
     private void loop() {
+        float beginTime = (float)glfwGetTime();
+        float endTime;
+        float dt = -1.0f;
+
         while(!glfwWindowShouldClose(glfwWindow))
         {
             //poll events
@@ -109,14 +134,15 @@ public class Window {
             glClearColor(r,g,b,a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            if(KeyListener.isKeyPressed(GLFW_KEY_SPACE))
-            {
-                r = Math.max(r - 0.01f, 0);
-                g = Math.max(g - 0.01f, 0);
-                b = Math.max(b - 0.01f, 0);
+            if(dt >= 0) {
+                currentScene.update(dt);
             }
 
             glfwSwapBuffers(glfwWindow);
+
+            endTime = (float)glfwGetTime();
+            dt = endTime - beginTime;
+            beginTime = endTime;
         }
     }
 

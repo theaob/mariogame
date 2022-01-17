@@ -1,0 +1,31 @@
+package jade;
+
+import java.awt.event.KeyEvent;
+
+public class LevelScene extends Scene {
+    private boolean changingScene = false;
+    private float timeToChangeScene = 2.0f;
+
+    public LevelScene() {
+        System.out.println("Inside Level Scene");
+    }
+
+    @Override
+    public void update(float dt) {
+        System.out.println("" + (1.0f/dt) + " fps");
+
+        if (!changingScene && KeyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
+            changingScene = true;
+        }
+
+        if(changingScene && timeToChangeScene > 0) {
+            timeToChangeScene -= dt;
+            Window.getInstance().r += dt * 0.5f;
+            Window.getInstance().g += dt * 0.5f;
+            Window.getInstance().b += dt * 0.5f;
+        }
+        else if(changingScene) {
+            Window.changeScene(0);
+        }
+    }
+}
