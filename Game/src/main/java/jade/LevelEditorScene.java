@@ -13,7 +13,7 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
-        if (!changingScene && KeyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
+        if (!changingScene) {
             changingScene = true;
         }
 

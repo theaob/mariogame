@@ -12,9 +12,8 @@ public class LevelScene extends Scene {
 
     @Override
     public void update(float dt) {
-        System.out.println("" + (1.0f/dt) + " fps");
 
-        if (!changingScene && KeyListener.isKeyPressed(KeyEvent.VK_SPACE)) {
+        if (!changingScene) {
             changingScene = true;
         }
 
