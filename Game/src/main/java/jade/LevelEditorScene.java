@@ -9,6 +9,7 @@ import util.Time;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 
+import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL20.*;
 import static org.lwjgl.opengl.GL30.*;
 
@@ -16,10 +17,10 @@ public class LevelEditorScene extends Scene {
 
     private final float[] vertexArray = {
             // position             // color                    //UV coordinates
-            100.0f, 0.0f,   0.0f,   1.0f, 0.0f, 0.0f, 1.0f,    1, 1,// bottom right 0
-            0.0f,   100.0f, 0.0f,   0.0f, 1.0f, 0.0f, 1.0f,    0, 0,// top left     1
-            100.0f, 100.0f, 0.0f,   0.0f, 0.0f, 1.0f, 1.0f,    1, 0,// top right    2
-            0.0f,   0.0f,   0.0f,   1.0f, 1.0f, 0.0f, 1.0f,    0, 1 // bottom left  3
+            100.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1, 1,// bottom right 0
+            0.0f, 100.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0, 0,// top left     1
+            100.0f, 100.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1, 0,// top right    2
+            0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 0, 1 // bottom left  3
     };
 
     //THIS MUST BE IN CCW ORDER
@@ -86,8 +87,26 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void update(float dt) {
-        camera.position.x -= dt * 50.0f;
-        camera.position.y -= dt * 20.0f;
+        boolean upPressed = KeyListener.isKeyPressed(GLFW_KEY_UP);
+        boolean downPressed = KeyListener.isKeyPressed(GLFW_KEY_DOWN);
+        boolean leftPressed = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
+        boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
+
+        if (upPressed) {
+            camera.position.y -= dt * 100.0f;
+        }
+
+        if (downPressed) {
+            camera.position.y += dt * 100.0f;
+        }
+
+        if (leftPressed) {
+            camera.position.x += dt * 100.0f;
+        }
+
+        if (rightPressed) {
+            camera.position.x -= dt * 100.0f;
+        }
 
         // Bind shader program
         defaultShader.use();
