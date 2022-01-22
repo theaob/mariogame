@@ -111,7 +111,7 @@ public class Shader {
     }
 
     public void use() {
-        if(!beingUsed) {
+        if (!beingUsed) {
             glUseProgram(shaderProgramID);
             beingUsed = true;
         }
@@ -138,38 +138,39 @@ public class Shader {
         glUniformMatrix3fv(varLocation, false, matBuffer);
     }
 
-    public void uploadVec4f(String varName, Vector4f vec)
-    {
+    public void uploadVec4f(String varName, Vector4f vec) {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w);
     }
 
-    public void uploadVec3f(String varName, Vector3f vec)
-    {
+    public void uploadVec3f(String varName, Vector3f vec) {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform3f(varLocation, vec.x, vec.y, vec.z);
     }
 
-    public void uploadVec2f(String varName, Vector2f vec)
-    {
+    public void uploadVec2f(String varName, Vector2f vec) {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform2f(varLocation, vec.x, vec.y);
     }
 
-    public void uploadFloat(String varName, float val)
-    {
+    public void uploadFloat(String varName, float val) {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform1f(varLocation, val);
     }
 
-    public void uploadInt(String varName, int val)
-    {
+    public void uploadInt(String varName, int val) {
         int varLocation = glGetUniformLocation(shaderProgramID, varName);
         use();
         glUniform1i(varLocation, val);
+    }
+
+    public void uploadTexture(String varName, int slot) {
+        int varLocation = glGetUniformLocation(shaderProgramID, varName);
+        use();
+        glUniform1i(varLocation, slot);
     }
 }
