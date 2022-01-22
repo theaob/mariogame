@@ -1,6 +1,10 @@
 package renderer;
 
+import org.joml.Matrix4f;
+import org.lwjgl.BufferUtils;
+
 import java.io.IOException;
+import java.nio.FloatBuffer;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
@@ -22,13 +26,13 @@ public class Shader {
             String source = new String(Files.readAllBytes(Paths.get(filePath)));
             String[] splitString = source.split("(#type)( )+([a-zA-Z]+)");
 
-            int index = source.indexOf("#type") + 6; //get the type string after #type
-            int eol = source.indexOf("\r\n", index);
-            String firstPattern = source.substring(index, eol).trim();
+            int startIndex = source.indexOf("#type") + 6; //get the type string after #type
+            int eol = source.indexOf("\r\n", startIndex);
+            String firstPattern = source.substring(startIndex, eol).trim();
 
-            index = source.indexOf("#type", eol) + 6;
-            eol = source.indexOf("\r\n", index);
-            String secondPattern = source.substring(index, eol).trim();
+            startIndex = source.indexOf("#type", eol) + 6;
+            eol = source.indexOf("\r\n", startIndex);
+            String secondPattern = source.substring(startIndex, eol).trim();
 
             if (firstPattern.equals("vertex")) {
                 this.vertexSource = splitString[1];
@@ -45,10 +49,6 @@ public class Shader {
             } else {
                 throw new IOException("Unexpected token '" + secondPattern + "'");
             }
-
-            System.out.println("Vertex source " + vertexSource);
-            System.out.println("Fragment source " + fragmentSource);
-
         } catch (IOException e) {
             e.printStackTrace();
             assert false : "Error: Could not open shader file '" + filePath + "'";
@@ -115,5 +115,12 @@ public class Shader {
 
     public void detach() {
         glUseProgram(0);
+    }
+
+    public void uploadMat4f(String varName, Matrix4f mat4) {
+        int varLocation = glGetUniformLocation(shaderProgramID, varName);
+        FloatBuffer matBuffer = BufferUtils.createFloatBuffer(16);
+        mat4.get(matBuffer);
+        glUniformMatrix4fv(varLocation, false, matBuffer);
     }
 }
