@@ -25,9 +25,9 @@ public class Window {
         this.width = 960;
         this.height = 540;
         this.title = "Mario";
-        r = 1.0F;
-        g = 1.0F;
-        b = 1.0F;
+        r = 0F;
+        g = 0F;
+        b = 0F;
         a = 1.0F;
     }
 
@@ -36,6 +36,10 @@ public class Window {
             instance = new Window();
         }
         return instance;
+    }
+
+    public static Scene getScene() {
+        return currentScene;
     }
 
     public static void changeScene(int newScene)
