@@ -24,9 +24,9 @@ public class Window {
         this.width = 960;
         this.height = 540;
         this.title = "Mario";
-        r = 0.7F;
-        g = 0.2F;
-        b = 0.1F;
+        r = 1.0F;
+        g = 1.0F;
+        b = 1.0F;
         a = 1.0F;
     }
 
@@ -123,6 +123,9 @@ public class Window {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
         Window.changeScene(0);
     }
