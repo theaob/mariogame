@@ -8,6 +8,9 @@ import util.AssetPool;
 import static org.lwjgl.glfw.GLFW.*;
 
 public class LevelEditorScene extends Scene {
+    GameObject obj1;
+    Spritesheet sprite;
+
     public LevelEditorScene() {
 
     }
@@ -17,9 +20,9 @@ public class LevelEditorScene extends Scene {
         this.camera = new Camera(new Vector2f(-250,0));
         loadResources();
 
-        Spritesheet sprite = AssetPool.getSpritesheet("assets/images/spritesheet.png");
+        sprite = AssetPool.getSpritesheet("assets/images/spritesheet.png");
 
-        GameObject obj1 = new GameObject("Object 1", new Transform(new Vector2f(100,100), new Vector2f(256, 256)));
+        obj1 = new GameObject("Object 1", new Transform(new Vector2f(100,100), new Vector2f(256, 256)));
         obj1.addComponent(new SpriteRenderer(sprite.getSprite(0)));
         addGameObjectToScene(obj1);
 
@@ -33,6 +36,10 @@ public class LevelEditorScene extends Scene {
         AssetPool.addSpriteSheet("assets/images/spritesheet.png",
                 new Spritesheet(AssetPool.getTexture("assets/images/spritesheet.png"), 16, 16, 26, 0));
     }
+
+    int spriteIndex = 1;
+    float spriteFlipTime = 0.05f;
+    float spriteFlipTimeLeft = 0.0f;
 
     @Override
     public void update(float dt) {
@@ -57,7 +64,19 @@ public class LevelEditorScene extends Scene {
             camera.position.x -= dt * 100.0f;
         }
 
-        System.out.println("FPS " + 1.0f/dt);
+        //System.out.println("FPS " + 1.0f/dt);
+
+        if(spriteFlipTimeLeft <= 0) {
+            spriteFlipTimeLeft = spriteFlipTime;
+            spriteIndex++;
+            if(spriteIndex > 3) {
+                spriteIndex = 1;
+            }
+        }
+
+        spriteFlipTimeLeft -= dt;
+
+        obj1.getComponent(SpriteRenderer.class).setSprite(sprite.getSprite(spriteIndex));
 
         for (GameObject go : gameObjectList) {
             go.update(dt);

@@ -24,9 +24,9 @@ public class Window {
         this.width = 960;
         this.height = 540;
         this.title = "Mario";
-        r = 0F;
-        g = 0F;
-        b = 0F;
+        r = 0.7F;
+        g = 0.2F;
+        b = 0.1F;
         a = 1.0F;
     }
 
@@ -68,7 +68,6 @@ public class Window {
         loop();
 
         //Free the memory
-
         glfwFreeCallbacks(glfwWindow);
         glfwDestroyWindow(glfwWindow);
 
