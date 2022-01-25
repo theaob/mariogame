@@ -15,6 +15,8 @@ public class Window {
     private String title;
     private static Window instance;
     private long glfwWindow;
+    private ImGuiLayer imguiLayer;
+
     protected float r, g, b, a;
 
     private static Scene currentScene = null;
@@ -59,6 +61,22 @@ public class Window {
                 assert false : "Unknown scene " + newScene;
                 break;
         }
+    }
+
+    public static int getWidth() {
+        return getInstance().width;
+    }
+
+    public static int getHeight() {
+        return getInstance().height;
+    }
+
+    public static void setWidth(int width) {
+        getInstance().width = width;
+    }
+
+    public static void setHeight(int height) {
+        getInstance().height = height;
     }
 
     public void run() {
@@ -109,6 +127,11 @@ public class Window {
 
         //TODO: Set gamepad callbacks
 
+        glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
+            Window.setWidth(newWidth);
+            Window.setHeight(newHeight);
+        });
+
         //Make the OpenGL context current
         glfwMakeContextCurrent(glfwWindow);
         //Enable v-sync
@@ -126,6 +149,9 @@ public class Window {
 
         glEnable(GL_BLEND);
         glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+
+        this.imguiLayer = new ImGuiLayer(glfwWindow);
+        this.imguiLayer.initImGui();
 
         Window.changeScene(0);
     }
@@ -146,6 +172,8 @@ public class Window {
             if(dt >= 0) {
                 currentScene.update(dt);
             }
+
+            this.imguiLayer.update(dt);
 
             glfwSwapBuffers(glfwWindow);
 
