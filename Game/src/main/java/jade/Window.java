@@ -3,6 +3,9 @@ package jade;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
+import scenes.LevelEditorScene;
+import scenes.LevelScene;
+import scenes.Scene;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
@@ -17,7 +20,7 @@ public class Window {
     private long glfwWindow;
     private ImGuiLayer imguiLayer;
 
-    protected float r, g, b, a;
+    public float r, g, b, a;
 
     private static Scene currentScene = null;
 

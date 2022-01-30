@@ -1,11 +1,9 @@
-package jade;
+package scenes;
 
-import components.Rigidbody;
-import components.Sprite;
-import components.SpriteRenderer;
-import components.Spritesheet;
+import components.*;
 import imgui.ImGui;
 import imgui.ImVec2;
+import jade.*;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 import util.AssetPool;
@@ -15,6 +13,8 @@ import static org.lwjgl.glfw.GLFW.*;
 public class LevelEditorScene extends Scene {
     GameObject obj1;
     Spritesheet sprites;
+
+    MouseControls mouseControls = new MouseControls();
 
     public LevelEditorScene() {
 
@@ -63,6 +63,8 @@ public class LevelEditorScene extends Scene {
         boolean leftPressed = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
         boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
 
+        mouseControls.update(dt);
+
         if (upPressed) {
             camera.position.y -= dt * 100.0f;
         }
@@ -109,7 +111,9 @@ public class LevelEditorScene extends Scene {
 
             ImGui.pushID(i);
             if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[0].x, texCoords[0].y, texCoords[2].x, texCoords[2].y)) {
-                System.out.println("Button " + i + " clicked");
+                GameObject object = Prefabs.generateSpriteObject(sprite, spriteWidth, spriteHeight);
+                // Attach this to cursor
+                mouseControls.pickupObject(object);
             }
             ImGui.popID();
 

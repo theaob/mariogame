@@ -1,6 +1,7 @@
-package jade;
+package scenes;
 
-import java.awt.event.KeyEvent;
+import jade.Window;
+import scenes.Scene;
 
 public class LevelScene extends Scene {
     private float timeToChangeScene = 2.0f;
