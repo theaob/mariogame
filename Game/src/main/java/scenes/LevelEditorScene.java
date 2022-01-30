@@ -16,7 +16,7 @@ public class LevelEditorScene extends Scene {
     GameObject obj1;
     Spritesheet sprites;
 
-    MouseControls mouseControls = new MouseControls();
+    GameObject levelEditorStuff = new GameObject("LevelEditor", new Transform(new Vector2f()), 0);
 
     public LevelEditorScene() {
 
@@ -24,6 +24,10 @@ public class LevelEditorScene extends Scene {
 
     @Override
     public void init() {
+        levelEditorStuff.addComponent(new MouseControls());
+        levelEditorStuff.addComponent(new GridLines());
+        addGameObjectToScene(levelEditorStuff);
+
         loadResources();
         this.camera = new Camera(new Vector2f(-250, 0));
         sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
@@ -31,7 +35,7 @@ public class LevelEditorScene extends Scene {
             this.activeGameObject = gameObjectList.get(0);
             return;
         }
-
+/*
 
         obj1 = new GameObject("Object 1", new Transform(new Vector2f(200, 100), new Vector2f(256, 256)), 8);
         SpriteRenderer obj1Renderer = new SpriteRenderer();
@@ -47,7 +51,7 @@ public class LevelEditorScene extends Scene {
         obj2Sprite.setTexture(AssetPool.getTexture("assets/images/blendImage2.png"));
         obj2Renderer.setSprite(obj2Sprite);
         obj2.addComponent(obj2Renderer);
-        addGameObjectToScene(obj2);
+        addGameObjectToScene(obj2);*/
 
     }
 
@@ -68,13 +72,7 @@ public class LevelEditorScene extends Scene {
         boolean leftPressed = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
         boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
 
-        float x = ((float) Math.sin(t) * 200.0f) + 600;
-        float y = ((float) Math.cos(t) * 200.0f) + 400;
-        t += 0.05f;
-
-        DebugDraw.addLine2D(new Vector2f(600,400), new Vector2f(x,y), new Vector3f(0,0,1), 10);
-
-        mouseControls.update(dt);
+        levelEditorStuff.getComponent(MouseControls.class).update(dt);
 
         if (upPressed) {
             camera.position.y -= dt * 100.0f;
@@ -115,16 +113,16 @@ public class LevelEditorScene extends Scene {
         float windowX2 = windowPos.x + windowSize.x;
         for (int i = 0; i < sprites.size(); i++) {
             Sprite sprite = sprites.getSprite(i);
-            float spriteWidth = sprite.getWidth() * 4;
-            float spriteHeight = sprite.getHeight() * 4;
+            float spriteWidth = sprite.getWidth() * 2;
+            float spriteHeight = sprite.getHeight() * 2;
             int id = sprite.getTextId();
             Vector2f[] texCoords = sprite.getTextureCoordinates();
 
             ImGui.pushID(i);
-            if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[0].x, texCoords[0].y, texCoords[2].x, texCoords[2].y)) {
-                GameObject object = Prefabs.generateSpriteObject(sprite, spriteWidth, spriteHeight);
+            if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                GameObject object = Prefabs.generateSpriteObject(sprite, 32, 32);
                 // Attach this to cursor
-                mouseControls.pickupObject(object);
+                levelEditorStuff.getComponent(MouseControls.class).pickupObject(object);
             }
             ImGui.popID();
 
