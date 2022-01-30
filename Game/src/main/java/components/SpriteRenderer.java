@@ -9,12 +9,12 @@ import renderer.Texture;
 
 public class SpriteRenderer extends Component {
 
-    private Vector4f color;
-    private Sprite sprite;
-    private Transform lastTransform;
-    private boolean isDirty = true;
+    private Vector4f color = new Vector4f(1,1,1,1);
+    private Sprite sprite = new Sprite();
+    private transient Transform lastTransform;
+    private transient boolean isDirty = true;
 
-    public SpriteRenderer(Vector4f color) {
+/*    public SpriteRenderer(Vector4f color) {
         this.color = color;
         this.sprite = new Sprite(null);
     }
@@ -22,7 +22,7 @@ public class SpriteRenderer extends Component {
     public SpriteRenderer(Sprite sprite) {
         this.sprite = sprite;
         this.color = new Vector4f(1,1,1,1);
-    }
+    }*/
 
     public Texture getTexture() {
         return this.sprite.getTexture();
