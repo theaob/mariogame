@@ -10,7 +10,8 @@ public class Sprite {
             new Vector2f(1,0),
             new Vector2f(0,0),
             new Vector2f(0,1)
-    };;
+    };
+    private float width, height = 0;
 
 /*    public Sprite(Texture texture) {
         this.texture = texture;
@@ -42,5 +43,25 @@ public class Sprite {
 
     public void setTextureCoordinates(Vector2f[] texCoords) {
         this.textureCoordinates = texCoords;
+    }
+
+    public float getWidth() {
+        return this.width;
+    }
+
+    public float getHeight() {
+        return this.height;
+    }
+
+    public void setWidth(float width) {
+        this.width = width;
+    }
+
+    public void setHeight(float height) {
+        this.height = height;
+    }
+
+    public int getTextId() {
+        return texture == null ? -1 : texture.getId();
     }
 }
