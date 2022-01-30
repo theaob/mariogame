@@ -1,1 +1,3 @@
 *.class
+Game/level.txt
+Game/imgui.ini
