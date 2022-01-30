@@ -49,20 +49,18 @@ public class Window {
         {
             case 0:
                 currentScene = new LevelEditorScene();
-                currentScene.load();
-                currentScene.init();
-                currentScene.start();
                 break;
             case 1:
                 currentScene = new LevelScene();
-                currentScene.load();
-                currentScene.init();
-                currentScene.start();
                 break;
             default:
                 assert false : "Unknown scene " + newScene;
                 break;
         }
+
+        currentScene.load();
+        currentScene.init();
+        currentScene.start();
     }
 
     public static int getWidth() {
