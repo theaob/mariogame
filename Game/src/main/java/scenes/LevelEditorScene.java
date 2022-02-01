@@ -25,7 +25,7 @@ public class LevelEditorScene extends Scene {
     @Override
     public void init() {
         levelEditorStuff.addComponent(new MouseControls());
-        levelEditorStuff.addComponent(new GridLines());
+        //levelEditorStuff.addComponent(new GridLines());
         addGameObjectToScene(levelEditorStuff);
 
         loadResources();
