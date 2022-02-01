@@ -63,7 +63,7 @@ public class LevelEditorScene extends Scene {
         AssetPool.getTexture("assets/images/blendImage2.png");
     }
 
-    float t = 0.0f;
+    float angle = 0.0f, x = 0.0f, y = 0.0f;
 
     @Override
     public void update(float dt) {
@@ -73,6 +73,13 @@ public class LevelEditorScene extends Scene {
         boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
 
         levelEditorStuff.getComponent(MouseControls.class).update(dt);
+
+        DebugDraw.addBox2D(new Vector2f(200,200), new Vector2f(64,32), angle, new Vector3f(0,1,0), 1);
+        angle += 40.0f * dt;
+
+        DebugDraw.addCircle(new Vector2f(x,y), 64, new Vector3f(0,1,0), 1);
+        x += 50f * dt;
+        y += 50f * dt;
 
         if (upPressed) {
             camera.position.y -= dt * 100.0f;
