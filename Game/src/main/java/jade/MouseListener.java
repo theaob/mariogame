@@ -1,5 +1,7 @@
 package jade;
 
+import org.joml.Matrix4f;
+import org.joml.Vector2f;
 import org.joml.Vector4f;
 
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
@@ -11,6 +13,9 @@ public class MouseListener {
     private double xPos, yPos, lastX, lastY;
     private boolean mouseButtonPressed[] = new boolean[3];
     private boolean isDragging;
+
+    private Vector2f gameViewportPos = new Vector2f();
+    private Vector2f gameViewportSize = new Vector2f();
 
     private MouseListener() {
         scrollX = 0.0;
@@ -71,25 +76,6 @@ public class MouseListener {
         return (float) getInstance().yPos;
     }
 
-    public static float getOrthoX() {
-        float currentX = getX();
-        currentX = (currentX / (float) Window.getInstance().getWidth()) * 2.0f - 1.0f;
-
-        Vector4f temp = new Vector4f(currentX, 0, 0, 1);
-        temp.mul(Window.getScene().getCamera().getInverseProjection()).mul(Window.getScene().getCamera().getInverseView());
-        currentX = temp.x;
-        return currentX;
-    }
-
-    public static float getOrthoY() {
-        float currentY = Window.getHeight() - getY();
-        currentY = (currentY / (float) Window.getInstance().getHeight()) * 2.0f - 1.0f;
-        Vector4f temp = new Vector4f(0, currentY, 0, 1);
-        temp.mul(Window.getScene().getCamera().getInverseProjection()).mul(Window.getScene().getCamera().getInverseView());
-        currentY = temp.y;
-        return currentY;
-    }
-
     public static float getDx() {
         return (float) (getInstance().lastX - getInstance().xPos);
     }
@@ -116,5 +102,41 @@ public class MouseListener {
         } else {
             return false;
         }
+    }
+
+    public static float getOrthoX() {
+        float currentX = getX() - getInstance().gameViewportPos.x;
+        currentX = (currentX / getInstance().gameViewportSize.x) * 2.0f - 1.0f;
+        Vector4f tmp = new Vector4f(currentX, 0, 0, 1);
+
+        Camera camera = Window.getScene().getCamera();
+        Matrix4f viewProjection = new Matrix4f();
+        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
+        tmp.mul(viewProjection);
+        currentX = tmp.x;
+
+        return currentX;
+    }
+
+    public static float getOrthoY() {
+        float currentY = getY() - getInstance().gameViewportPos.y;
+        currentY = -((currentY / getInstance().gameViewportSize.y) * 2.0f - 1.0f);
+        Vector4f tmp = new Vector4f(0, currentY, 0, 1);
+
+        Camera camera = Window.getScene().getCamera();
+        Matrix4f viewProjection = new Matrix4f();
+        camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
+        tmp.mul(viewProjection);
+        currentY = tmp.y;
+
+        return currentY;
+    }
+
+    public void setGameViewportPos(Vector2f gameViewportPos) {
+        this.gameViewportPos.set(gameViewportPos);
+    }
+
+    public void setGameViewportSize(Vector2f gameViewportSize) {
+        this.gameViewportSize.set(gameViewportSize);
     }
 }
