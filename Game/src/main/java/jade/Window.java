@@ -9,6 +9,8 @@ import scenes.LevelEditorScene;
 import scenes.LevelScene;
 import scenes.Scene;
 
+import java.awt.*;
+
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
@@ -21,14 +23,13 @@ public class Window {
     private static Window instance;
     private long glfwWindow;
     private ImGuiLayer imguiLayer;
-    private Framebuffer framebuffer;
+    private static Framebuffer framebuffer;
 
     public float r, g, b, a;
 
     private static Scene currentScene = null;
 
-    private Window()
-    {
+    private Window() {
         this.width = 1920;
         this.height = 1000;
         this.title = "Mario";
@@ -39,7 +40,7 @@ public class Window {
     }
 
     public static Window getInstance() {
-        if(instance == null) {
+        if (instance == null) {
             instance = new Window();
         }
         return instance;
@@ -49,10 +50,8 @@ public class Window {
         return currentScene;
     }
 
-    public static void changeScene(int newScene)
-    {
-        switch (newScene)
-        {
+    public static void changeScene(int newScene) {
+        switch (newScene) {
             case 0:
                 currentScene = new LevelEditorScene();
                 break;
@@ -85,6 +84,10 @@ public class Window {
         getInstance().height = height;
     }
 
+    public static Framebuffer getFramebuffer() {
+        return framebuffer;
+    }
+
     public void run() {
         System.out.println("LWJGL Version: " + Version.getVersion() + "!");
 
@@ -105,7 +108,7 @@ public class Window {
         GLFWErrorCallback.createPrint(System.err).set();
 
         //Init GLFW
-        if(!glfwInit()) {
+        if (!glfwInit()) {
             throw new IllegalStateException("Unable to initialize GLFW");
         }
 
@@ -118,8 +121,7 @@ public class Window {
         //Create the window
         glfwWindow = glfwCreateWindow(this.width, this.height, this.title, NULL, NULL);
 
-        if(glfwWindow == NULL)
-        {
+        if (glfwWindow == NULL) {
             throw new IllegalStateException("Failed to create GLFW window");
         }
 
@@ -159,28 +161,29 @@ public class Window {
         this.imguiLayer = new ImGuiLayer(glfwWindow);
         this.imguiLayer.initImGui();
 
-        this.framebuffer = new Framebuffer(3840, 1080);
+        this.framebuffer = new Framebuffer(1920, 1080);
+        glViewport(0, 0, 1920, 1080);
 
         Window.changeScene(0);
     }
 
     private void loop() {
-        float beginTime = (float)glfwGetTime();
+        float beginTime = (float) glfwGetTime();
         float endTime;
         float dt = -1.0f;
 
-        while(!glfwWindowShouldClose(glfwWindow))
-        {
+        while (!glfwWindowShouldClose(glfwWindow)) {
             //poll events
             glfwPollEvents();
 
             DebugDraw.beginFrame();
 
-            glClearColor(r,g,b,a);
+            framebuffer.bind();
+
+            glClearColor(r, g, b, a);
             glClear(GL_COLOR_BUFFER_BIT);
 
-            //framebuffer.bind();
-            if(dt >= 0) {
+            if (dt >= 0) {
                 DebugDraw.draw();
                 currentScene.update(dt);
             }
@@ -190,7 +193,7 @@ public class Window {
 
             glfwSwapBuffers(glfwWindow);
 
-            endTime = (float)glfwGetTime();
+            endTime = (float) glfwGetTime();
             dt = endTime - beginTime;
             beginTime = endTime;
         }
@@ -198,5 +201,7 @@ public class Window {
         currentScene.saveExit();
     }
 
-
+    public static float getTargetAspectRatio() {
+        return 16.0f / 9.0f;
+    }
 }
