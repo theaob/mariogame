@@ -25,15 +25,15 @@ public class LevelEditorScene extends Scene {
     @Override
     public void init() {
         levelEditorStuff.addComponent(new MouseControls());
-        //levelEditorStuff.addComponent(new GridLines());
-        addGameObjectToScene(levelEditorStuff);
+        levelEditorStuff.addComponent(new GridLines());
 
         loadResources();
         this.camera = new Camera(new Vector2f(-250, 0));
         sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
         if (levelLoaded) {
-            this.activeGameObject = gameObjectList.get(0);
-            return;
+            if (gameObjectList.size() > 0) {
+                this.activeGameObject = gameObjectList.get(0);
+            }
         }
 /*
 
@@ -61,6 +61,15 @@ public class LevelEditorScene extends Scene {
                 new Spritesheet(AssetPool.getTexture("assets/images/spritesheets/decorationsAndBlocks.png"),
                         16, 16, 81, 0));
         AssetPool.getTexture("assets/images/blendImage2.png");
+
+        for (GameObject go : gameObjectList) {
+            SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+            if (spr != null) {
+                if (spr.getTexture() != null) {
+                    spr.setTexture(AssetPool.getTexture(spr.getTexture().getFilepath()));
+                }
+            }
+        }
     }
 
     float angle = 0.0f, x = 0.0f, y = 0.0f;
@@ -72,12 +81,12 @@ public class LevelEditorScene extends Scene {
         boolean leftPressed = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
         boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
 
-        levelEditorStuff.getComponent(MouseControls.class).update(dt);
+        levelEditorStuff.update(dt);
 
-        DebugDraw.addBox2D(new Vector2f(200,200), new Vector2f(64,32), angle, new Vector3f(0,1,0), 1);
+        DebugDraw.addBox2D(new Vector2f(200, 200), new Vector2f(64, 32), angle, new Vector3f(0, 1, 0), 1);
         angle += 40.0f * dt;
 
-        DebugDraw.addCircle(new Vector2f(x,y), 64, new Vector3f(0,1,0), 1);
+        DebugDraw.addCircle(new Vector2f(x, y), 64, new Vector3f(0, 1, 0), 1);
         x += 50f * dt;
         y += 50f * dt;
 

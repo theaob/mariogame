@@ -76,4 +76,8 @@ public class SpriteRenderer extends Component {
     public void setClean() {
         isDirty = false;
     }
+
+    public void setTexture(Texture texture) {
+        this.sprite.setTexture(texture);
+    }
 }
