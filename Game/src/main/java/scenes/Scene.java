@@ -17,13 +17,14 @@ import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public abstract class Scene {
     protected Renderer renderer = new Renderer();
     protected Camera camera;
     private boolean isRunning = false;
     protected List<GameObject> gameObjectList;
-    protected GameObject activeGameObject = null;
+
     protected boolean levelLoaded = false;
 
     public Scene() {
@@ -59,16 +60,6 @@ public abstract class Scene {
 
     public Camera getCamera() {
         return camera;
-    }
-
-    public void sceneImgui() {
-        if(activeGameObject != null) {
-            ImGui.begin("Inspector");
-            activeGameObject.imgui();
-            ImGui.end();
-        }
-
-        imgui();
     }
 
     public void imgui() {
@@ -132,5 +123,11 @@ public abstract class Scene {
             Component.init(maxCompId);
             this.levelLoaded = true;
         }
+    }
+
+    public GameObject getGameObject(int gameObjectID) {
+        Optional<GameObject> result = gameObjectList.stream().
+                filter(gameObject -> gameObject.getUid() == gameObjectID).findFirst();
+        return result.orElse(null);
     }
 }
