@@ -19,4 +19,9 @@ public class LevelScene extends Scene {
             Window.getInstance().b += dt * 0.5f;
         }
     }
+
+    @Override
+    public void render() {
+
+    }
 }
