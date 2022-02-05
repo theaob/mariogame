@@ -1,5 +1,6 @@
 package jade;
 
+import editor.PropertiesWindow;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
@@ -229,5 +230,9 @@ public class Window {
 
     public static float getTargetAspectRatio() {
         return 16.0f / 9.0f;
+    }
+
+    public PropertiesWindow getPropertiesWindow() {
+        return imguiLayer.getPropertiesWindow();
     }
 }
