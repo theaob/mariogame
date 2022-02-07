@@ -33,7 +33,7 @@ public class Window {
 
     private Window() {
         this.width = 1920;
-        this.height = 1000;
+        this.height = 1009;
         this.title = "Mario";
         r = 1.0F;
         g = 1.0F;
@@ -138,6 +138,7 @@ public class Window {
         //TODO: Set gamepad callbacks
 
         glfwSetWindowSizeCallback(glfwWindow, (w, newWidth, newHeight) -> {
+            System.out.println(newWidth+","+ newHeight);
             Window.setWidth(newWidth);
             Window.setHeight(newHeight);
         });

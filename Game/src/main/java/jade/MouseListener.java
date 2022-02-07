@@ -10,9 +10,11 @@ import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 public class MouseListener {
     private static MouseListener instance;
     private double scrollX, scrollY;
-    private double xPos, yPos, lastX, lastY;
+    private double xPos, yPos, lastX, lastY, worldX, worldY, lastWorldX, lastWorldY;
     private boolean mouseButtonPressed[] = new boolean[3];
     private boolean isDragging;
+
+    private int mouseButtonDown = 0;
 
     private Vector2f gameViewportPos = new Vector2f();
     private Vector2f gameViewportSize = new Vector2f();
@@ -36,19 +38,30 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
+        if(getInstance().mouseButtonDown > 0) {
+            getInstance().isDragging = true;
+        }
+
         getInstance().lastX = getInstance().xPos;
         getInstance().lastY = getInstance().yPos;
+        getInstance().lastWorldX = getInstance().worldX;
+        getInstance().lastWorldY = getInstance().worldY;
         getInstance().xPos = xPos;
         getInstance().yPos = yPos;
-        getInstance().isDragging = getInstance().mouseButtonPressed[0] || getInstance().mouseButtonPressed[1] || getInstance().mouseButtonPressed[2];
+        calcOrthoX();
+        calcOrthoY();
     }
 
     public static void mouseButtonCallback(long window, int button, int action, int modifiers) {
         if (action == GLFW_PRESS) {
+            getInstance().mouseButtonDown++;
+
             if (button < getInstance().mouseButtonPressed.length) {
                 getInstance().mouseButtonPressed[button] = true;
             }
         } else if (action == GLFW_RELEASE) {
+            getInstance().mouseButtonDown--;
+
             if (button < getInstance().mouseButtonPressed.length) {
                 getInstance().mouseButtonPressed[button] = false;
                 getInstance().isDragging = false;
@@ -66,6 +79,8 @@ public class MouseListener {
         getInstance().scrollY = 0;
         getInstance().lastX = getInstance().xPos;
         getInstance().lastY = getInstance().yPos;
+        getInstance().lastWorldX = getInstance().worldX;
+        getInstance().lastWorldY = getInstance().worldY;
     }
 
     public static float getX() {
@@ -80,8 +95,16 @@ public class MouseListener {
         return (float) (getInstance().lastX - getInstance().xPos);
     }
 
+    public static float getWorldDx() {
+        return (float) (getInstance().lastWorldX - getInstance().worldX);
+    }
+
     public static float getDy() {
         return (float) (getInstance().lastY - getInstance().yPos);
+    }
+
+    public static float getWorldDy() {
+        return (float) (getInstance().lastWorldY - getInstance().worldY);
     }
 
     public static float getScrollX() {
@@ -105,6 +128,10 @@ public class MouseListener {
     }
 
     public static float getOrthoX() {
+        return (float) getInstance().worldX;
+    }
+
+    private static void calcOrthoX(){
         float currentX = getX() - getInstance().gameViewportPos.x;
         currentX = (currentX / getInstance().gameViewportSize.x) * 2.0f - 1.0f;
         Vector4f tmp = new Vector4f(currentX, 0, 0, 1);
@@ -113,12 +140,14 @@ public class MouseListener {
         Matrix4f viewProjection = new Matrix4f();
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
         tmp.mul(viewProjection);
-        currentX = tmp.x;
-
-        return currentX;
+        getInstance().worldX = tmp.x;
     }
 
     public static float getOrthoY() {
+        return (float) getInstance().worldY;
+    }
+
+    private static void calcOrthoY() {
         float currentY = getY() - getInstance().gameViewportPos.y;
         currentY = -((currentY / getInstance().gameViewportSize.y) * 2.0f - 1.0f);
         Vector4f tmp = new Vector4f(0, currentY, 0, 1);
@@ -127,9 +156,7 @@ public class MouseListener {
         Matrix4f viewProjection = new Matrix4f();
         camera.getInverseView().mul(camera.getInverseProjection(), viewProjection);
         tmp.mul(viewProjection);
-        currentY = tmp.y;
-
-        return currentY;
+        getInstance().worldY = tmp.y;
     }
 
     public static float getScreenX() {
