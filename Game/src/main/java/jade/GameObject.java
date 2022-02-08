@@ -10,15 +10,13 @@ public class GameObject {
     private int uid = -1;
     private String name;
     private List<Component> componentList;
-    public Transform transform;
-    private int zIndex;
+    public transient Transform transform;
     private boolean doSerialization = true;
 
-    public GameObject(String name, Transform transform, int zIndex) {
+    public GameObject(String name) {
         this.name = name;
         this.componentList = new ArrayList<>();
-        this.transform = transform;
-        this.zIndex = zIndex;
+
         this.uid = ID_COUNTER++;
     }
 
@@ -72,10 +70,6 @@ public class GameObject {
                 componentList) {
             c.imgui();
         }
-    }
-
-    public int getzIndex() {
-        return zIndex;
     }
 
     public static void init(int maxId) {
