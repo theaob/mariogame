@@ -6,56 +6,36 @@ import imgui.ImVec2;
 import jade.*;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import org.joml.Vector4f;
 import renderer.DebugDraw;
 import util.AssetPool;
 
 import static org.lwjgl.glfw.GLFW.*;
 
-public class LevelEditorScene extends Scene {
-    GameObject obj1;
-    Spritesheet sprites;
+public class LevelEditorSceneInitializer extends SceneInitializer {
 
-    GameObject levelEditorStuff = this.createGameObject("LevelEditor");
+    private Spritesheet sprites;
+    private GameObject levelEditorStuff;
 
-    public LevelEditorScene() {
+    public LevelEditorSceneInitializer() {
 
     }
 
     @Override
-    public void init() {
-        loadResources();
+    public void init(Scene scene) {
         sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
         Spritesheet gizmos = AssetPool.getSpritesheet("assets/images/gizmos.png");
 
-        this.camera = new Camera(new Vector2f(-250, 0));
-
+        levelEditorStuff = scene.createGameObject("LevelEditor");
+        levelEditorStuff.setNoSerialize();
         levelEditorStuff.addComponent(new MouseControls());
         levelEditorStuff.addComponent(new GridLines());
-        levelEditorStuff.addComponent(new EditorCamera(this.camera));
+        levelEditorStuff.addComponent(new EditorCamera(scene.getCamera()));
         levelEditorStuff.addComponent(new GizmoSystem(gizmos));
-        levelEditorStuff.start();
-/*
-
-        obj1 = new GameObject("Object 1", new Transform(new Vector2f(200, 100), new Vector2f(256, 256)), 8);
-        SpriteRenderer obj1Renderer = new SpriteRenderer();
-        obj1Renderer.setColor(new Vector4f(1, 0, 0, 1));
-        obj1.addComponent(obj1Renderer);
-        obj1.addComponent(new Rigidbody());
-        addGameObjectToScene(obj1);
-        this.activeGameObject = obj1;
-
-        GameObject obj2 = new GameObject("Object 2", new Transform(new Vector2f(400, 100), new Vector2f(256, 256)), 4);
-        SpriteRenderer obj2Renderer = new SpriteRenderer();
-        Sprite obj2Sprite = new Sprite();
-        obj2Sprite.setTexture(AssetPool.getTexture("assets/images/blendImage2.png"));
-        obj2Renderer.setSprite(obj2Sprite);
-        obj2.addComponent(obj2Renderer);
-        addGameObjectToScene(obj2);*/
-
+        scene.addGameObjectToScene(levelEditorStuff);
     }
 
-    private void loadResources() {
+    @Override
+    public void loadResources(Scene scene) {
         AssetPool.getShader("assets/shaders/default.glsl");
         AssetPool.addSpriteSheet("assets/images/spritesheets/decorationsAndBlocks.png",
                 new Spritesheet(AssetPool.getTexture("assets/images/spritesheets/decorationsAndBlocks.png"),
@@ -65,7 +45,7 @@ public class LevelEditorScene extends Scene {
                 new Spritesheet(AssetPool.getTexture("assets/images/gizmos.png"),
                         24, 48, 3, 0));
 
-        for (GameObject go : gameObjectList) {
+        for (GameObject go : scene.getGameObjects()) {
             SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
             if (spr != null) {
                 if (spr.getTexture() != null) {
@@ -73,54 +53,6 @@ public class LevelEditorScene extends Scene {
                 }
             }
         }
-    }
-
-    float angle = 0.0f, x = 0.0f, y = 0.0f;
-
-    @Override
-    public void update(float dt) {
-        boolean upPressed = KeyListener.isKeyPressed(GLFW_KEY_UP);
-        boolean downPressed = KeyListener.isKeyPressed(GLFW_KEY_DOWN);
-        boolean leftPressed = KeyListener.isKeyPressed(GLFW_KEY_LEFT);
-        boolean rightPressed = KeyListener.isKeyPressed(GLFW_KEY_RIGHT);
-
-        levelEditorStuff.update(dt);
-
-        this.camera.adjustProjection();
-
-        DebugDraw.addBox2D(new Vector2f(200, 200), new Vector2f(64, 32), angle, new Vector3f(0, 1, 0), 1);
-        angle += 40.0f * dt;
-
-        DebugDraw.addCircle(new Vector2f(x, y), 64, new Vector3f(0, 1, 0), 1);
-        x += 50f * dt;
-        y += 50f * dt;
-
-        if (upPressed) {
-            camera.position.y -= dt * 100.0f;
-        }
-
-        if (downPressed) {
-            camera.position.y += dt * 100.0f;
-        }
-
-        if (leftPressed) {
-            camera.position.x += dt * 100.0f;
-        }
-
-        if (rightPressed) {
-            camera.position.x -= dt * 100.0f;
-        }
-
-        //System.out.println("FPS " + 1.0f/dt);
-
-        for (GameObject go : gameObjectList) {
-            go.update(dt);
-        }
-    }
-
-    @Override
-    public void render() {
-        this.renderer.render();
     }
 
     @Override

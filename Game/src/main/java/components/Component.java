@@ -93,4 +93,12 @@ public abstract class Component {
     public static void init(int maxId) {
         ID_COUNTER = maxId;
     }
+
+    public void destroy() {
+
+    }
+
+    public void editorUpdate(float dt) {
+
+    }
 }

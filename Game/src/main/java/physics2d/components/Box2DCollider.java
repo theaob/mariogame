@@ -2,6 +2,7 @@ package physics2d.components;
 
 import components.Collider;
 import org.joml.Vector2f;
+import renderer.DebugDraw;
 
 public class Box2DCollider extends Collider {
     private Vector2f halfSize = new Vector2f(1);
@@ -15,8 +16,13 @@ public class Box2DCollider extends Collider {
         this.halfSize = halfSize;
     }
 
-
     public Vector2f getOrigin() {
         return origin;
+    }
+
+    @Override
+    public void editorUpdate(float dt) {
+        Vector2f center = new Vector2f(this.gameObject.transform.position).add(getOffset());
+        DebugDraw.addBox2D(center, this.halfSize, this.gameObject.transform.rotation);
     }
 }

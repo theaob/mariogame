@@ -1,7 +1,6 @@
 package editor;
 
 import components.NonPickable;
-import components.Rigidbody;
 import imgui.ImGui;
 import jade.GameObject;
 import jade.MouseListener;
@@ -74,5 +73,9 @@ public class PropertiesWindow {
 
     public GameObject getActiveGameObject() {
         return activeGameObject;
+    }
+
+    public void setActiveGameObject(GameObject o) {
+        activeGameObject = o;
     }
 }

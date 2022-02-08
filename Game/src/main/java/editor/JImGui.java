@@ -99,7 +99,7 @@ public class JImGui {
         ImGui.nextColumn();
 
         int[] valArr = {value};
-        ImGui.dragInt("##dragFloat", valArr, 0.1f);
+        ImGui.dragInt("##dragInt", valArr, 1);
 
         ImGui.columns(1);
         ImGui.popID();

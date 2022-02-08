@@ -1,23 +1,25 @@
 package jade;
 
 import editor.PropertiesWindow;
+import observers.EventSystem;
+import observers.Observer;
+import observers.events.Event;
+import observers.events.EventType;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.opengl.GL;
 import renderer.*;
-import scenes.LevelEditorScene;
-import scenes.LevelScene;
+import scenes.LevelEditorSceneInitializer;
 import scenes.Scene;
+import scenes.SceneInitializer;
 import util.AssetPool;
-
-import java.awt.*;
 
 import static org.lwjgl.glfw.Callbacks.glfwFreeCallbacks;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
 import static org.lwjgl.system.MemoryUtil.NULL;
 
-public class Window {
+public class Window implements Observer {
 
     private int width, height;
     private String title;
@@ -27,18 +29,14 @@ public class Window {
     private static Framebuffer framebuffer;
     private PickingTexture pickingTexture;
 
-    public float r, g, b, a;
-
     private static Scene currentScene = null;
+    private boolean runtimePlaying = false;
 
     private Window() {
         this.width = 1920;
         this.height = 1009;
         this.title = "Mario";
-        r = 1.0F;
-        g = 1.0F;
-        b = 1.0F;
-        a = 1.0F;
+        EventSystem.addObserver(this);
     }
 
     public static Window getInstance() {
@@ -52,19 +50,14 @@ public class Window {
         return currentScene;
     }
 
-    public static void changeScene(int newScene) {
-        switch (newScene) {
-            case 0:
-                currentScene = new LevelEditorScene();
-                break;
-            case 1:
-                currentScene = new LevelScene();
-                break;
-            default:
-                assert false : "Unknown scene " + newScene;
-                break;
+    public static void changeScene(SceneInitializer sceneInitializer) {
+        if (currentScene != null) {
+            currentScene.destroy();
         }
 
+
+        currentScene = new Scene(sceneInitializer);
+        Window.getInstance().imguiLayer.getPropertiesWindow().setActiveGameObject(null);
         currentScene.load();
         currentScene.init();
         currentScene.start();
@@ -168,7 +161,7 @@ public class Window {
         this.imguiLayer = new ImGuiLayer(glfwWindow, pickingTexture);
         this.imguiLayer.initImGui();
 
-        Window.changeScene(0);
+        Window.changeScene(new LevelEditorSceneInitializer());
     }
 
     private void loop() {
@@ -204,13 +197,17 @@ public class Window {
 
             framebuffer.bind();
 
-            glClearColor(r, g, b, a);
+            glClearColor(1,1,1,1);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
                 DebugDraw.draw();
                 Renderer.bindShader(defaultShader);
-                currentScene.update(dt);
+                if(runtimePlaying) {
+                    currentScene.update(dt);
+                } else {
+                    currentScene.editorUpdate(dt);
+                }
                 currentScene.render();
             }
             framebuffer.unbind();
@@ -225,8 +222,6 @@ public class Window {
             dt = endTime - beginTime;
             beginTime = endTime;
         }
-
-        currentScene.saveExit();
     }
 
     public static float getTargetAspectRatio() {
@@ -235,5 +230,26 @@ public class Window {
 
     public PropertiesWindow getPropertiesWindow() {
         return imguiLayer.getPropertiesWindow();
+    }
+
+    @Override
+    public void onNotify(GameObject object, Event event) {
+        switch (event.type) {
+            case GameEngineStartPlay:
+                this.runtimePlaying = true;
+                //currentScene.save();
+                Window.changeScene(new LevelEditorSceneInitializer());
+                break;
+            case GameEnginStopPlay:
+                this.runtimePlaying = false;
+                Window.changeScene(new LevelEditorSceneInitializer());
+                break;
+            case SaveLevel:
+                currentScene.save();
+                break;
+            case LoadLevel:
+                Window.changeScene(new LevelEditorSceneInitializer());
+                break;
+        }
     }
 }

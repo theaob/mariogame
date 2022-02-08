@@ -1,6 +1,7 @@
 package renderer;
 
 import components.SpriteRenderer;
+import jade.GameObject;
 import jade.Window;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
@@ -115,16 +116,16 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
     public void render() {
         boolean rebufferData = false;
-        for(int i = 0; i < numSprites; i++) {
+        for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = sprites[i];
-            if(spr.isDirty()) {
+            if (spr.isDirty()) {
                 loadVertexProperties(i);
                 spr.setClean();
                 rebufferData = true;
             }
         }
 
-        if(rebufferData) {
+        if (rebufferData) {
             //for now we'll rebuffer all data every frame
             glBindBuffer(GL_ARRAY_BUFFER, vboID);
             glBufferSubData(GL_ARRAY_BUFFER, 0, vertices);
@@ -186,10 +187,10 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
         boolean isRotated = sprite.gameObject.transform.rotation != 0;
         Matrix4f transformMatrix = new Matrix4f().identity();
-        if(isRotated) {
+        if (isRotated) {
             transformMatrix.translate(sprite.gameObject.transform.position.x,
                     sprite.gameObject.transform.position.y, 0f);
-            transformMatrix.rotate((float)Math.toRadians(sprite.gameObject.transform.rotation), 0, 0, 1);
+            transformMatrix.rotate((float) Math.toRadians(sprite.gameObject.transform.rotation), 0, 0, 1);
             transformMatrix.scale(sprite.gameObject.transform.scale.x, sprite.gameObject.transform.scale.y, 1);
         }
 
@@ -207,9 +208,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
 
             Vector4f currentPos = new Vector4f(sprite.gameObject.transform.position.x +
                     (xAdd * sprite.gameObject.transform.scale.x), sprite.gameObject.transform.position.y +
-                    (yAdd * sprite.gameObject.transform.scale.y), 0 ,1);
+                    (yAdd * sprite.gameObject.transform.scale.y), 0, 1);
 
-            if(isRotated) {
+            if (isRotated) {
                 currentPos = new Vector4f(xAdd, yAdd, 0, 1).mul(transformMatrix);
                 //currentPos.mul(transformMatrix);
             }
@@ -283,5 +284,20 @@ public class RenderBatch implements Comparable<RenderBatch> {
     @Override
     public int compareTo(RenderBatch o) {
         return Integer.compare(this.zIndex, o.getzIndex());
+    }
+
+    public boolean destroyIfExists(GameObject go) {
+        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        for (int i = 0; i < numSprites; i++) {
+            if (sprites[i].equals(spr)) {
+                for (int j = i; j < numSprites; j++) {
+                    sprites[j] = sprites[j+1];
+                    sprites[j].setDirty();
+                }
+                numSprites--;
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -6,6 +6,6 @@ public abstract class Collider extends Component{
     private Vector2f offset = new Vector2f();
 
     public Vector2f getOffset() {
-        return this.getOffset();
+        return offset;
     }
 }
