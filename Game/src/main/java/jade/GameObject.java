@@ -141,4 +141,8 @@ public class GameObject {
     private void generateUid() {
         this.uid = ID_COUNTER++;
     }
+
+    public String getName() {
+        return name;
+    }
 }
