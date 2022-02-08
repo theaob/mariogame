@@ -14,12 +14,13 @@ import java.util.List;
 public class GameObject {
     private static int ID_COUNTER = 0;
     private int uid = -1;
-    private String name;
+    public String name;
     private List<Component> componentList;
     public transient Transform transform;
     private boolean doSerialization = true;
     private boolean isDead = false;
 
+    //TODO: Change ID system to Snowflake
     public GameObject(String name) {
         this.name = name;
         this.componentList = new ArrayList<>();
@@ -140,9 +141,5 @@ public class GameObject {
 
     private void generateUid() {
         this.uid = ID_COUNTER++;
-    }
-
-    public String getName() {
-        return name;
     }
 }
