@@ -2,6 +2,7 @@ package components;
 
 import editor.JImGui;
 import imgui.ImGui;
+import imgui.type.ImInt;
 import jade.GameObject;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
@@ -68,6 +69,13 @@ public abstract class Component {
                         val.set(imVec[0], imVec[1], imVec[2], imVec[3]);
                         f.set(this, val);
                     }
+                } else if (type.isEnum()) {
+                    String[] enumValues = getEnumValues(type);
+                    String enumType = ((Enum) value).name();
+                    ImInt index = new ImInt(indexOf(enumType, enumValues));
+                    if (ImGui.combo(f.getName(), index, enumValues, enumValues.length)) {
+                        f.set(this, type.getEnumConstants()[index.get()]);
+                    }
                 }
 
                 if (isPrivate) {
@@ -77,6 +85,25 @@ public abstract class Component {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
+
+    private int indexOf(String enumType, String[] enumValues) {
+        for(int i = 0; i < enumValues.length; i++) {
+            if(enumType.equals(enumValues[i])) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    private <T extends Enum<T>> String[] getEnumValues(Class<T> enumType) {
+        String[] enumValues = new String[enumType.getEnumConstants().length];
+        int i = 0;
+        for( T enumIntegerValue : enumType.getEnumConstants()) {
+            enumValues[i] = enumIntegerValue.name();
+            i++;
+        }
+        return enumValues;
     }
 
     public void generateId() {

@@ -237,7 +237,7 @@ public class Window implements Observer {
         switch (event.type) {
             case GameEngineStartPlay:
                 this.runtimePlaying = true;
-                //currentScene.save();
+                currentScene.save();
                 Window.changeScene(new LevelEditorSceneInitializer());
                 break;
             case GameEnginStopPlay:
