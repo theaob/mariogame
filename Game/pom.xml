@@ -16,6 +16,8 @@
         <steamworks4j.version>1.8.0</steamworks4j.version>
         <lwjgl.natives>natives-windows</lwjgl.natives>
         <imgui.java.version>1.86.1</imgui.java.version>
+        <gson.version>2.8.9</gson.version>
+        <jbox2d.version>2.2.1.1</jbox2d.version>
     </properties>
 
     <dependencyManagement>
@@ -122,7 +124,12 @@
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>2.8.9</version>
+            <version>${gson.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jbox2d</groupId>
+            <artifactId>jbox2d-library</artifactId>
+            <version>${jbox2d.version}</version>
         </dependency>
     </dependencies>
 
