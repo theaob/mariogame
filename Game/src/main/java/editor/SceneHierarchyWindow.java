@@ -2,7 +2,6 @@ package editor;
 
 import imgui.ImGui;
 import imgui.flag.ImGuiTreeNodeFlags;
-import imgui.flag.ImGuiWindowFlags;
 import jade.GameObject;
 import jade.Window;
 
@@ -17,12 +16,12 @@ public class SceneHierarchyWindow {
         List<GameObject> gameObjectList = Window.getScene().getGameObjects();
         int index = 0;
 
-        for(GameObject obj : gameObjectList) {
-            if(!obj.doSerialization()) {
+        for (GameObject obj : gameObjectList) {
+            if (!obj.doSerialization()) {
                 continue;
             }
 
-            if(doTreeNode(obj, index)) {
+            if (doTreeNode(obj, index)) {
                 ImGui.treePop();
             }
 
@@ -40,15 +39,15 @@ public class SceneHierarchyWindow {
                 ImGuiTreeNodeFlags.SpanAvailWidth);
         ImGui.popID();
 
-        if(ImGui.beginDragDropSource()) {
+        if (ImGui.beginDragDropSource()) {
             ImGui.setDragDropPayload(DRAG_DROP_STRING, go);
             ImGui.text(go.name);
             ImGui.endDragDropSource();
         }
 
-        if(ImGui.beginDragDropTarget()) {
+        if (ImGui.beginDragDropTarget()) {
             GameObject payload = ImGui.acceptDragDropPayload(DRAG_DROP_STRING, GameObject.class);
-            if(payload != null) {
+            if (payload != null) {
                 //getClass().isAssignableFrom(GameObject.class) ??
                 System.out.println("Payload " + payload.name);
             }
