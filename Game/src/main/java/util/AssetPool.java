@@ -1,10 +1,12 @@
 package util;
 
 import components.Spritesheet;
+import jade.Sound;
 import renderer.Shader;
 import renderer.Texture;
 
 import java.io.File;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -12,6 +14,7 @@ public class AssetPool {
     private static Map<String, Shader> shaderMap = new HashMap<>();
     private static Map<String, Texture> textureMap = new HashMap<>();
     private static Map<String, Spritesheet> spritesheetMap = new HashMap<>();
+    private static Map<String, Sound> soundMap = new HashMap<>();
 
     public static Shader getShader(String resourceName) {
         File file = new File(resourceName);
@@ -50,5 +53,29 @@ public class AssetPool {
             assert false : "Error: Tried to access spritesheet " + resourceName + " and it has not been added to pool";
         }
         return spritesheetMap.getOrDefault(file.getAbsolutePath(), null);
+    }
+
+    public static Sound getSound(String soundFile) {
+        File file = new File(soundFile);
+        if (!soundMap.containsKey(file.getAbsolutePath())) {
+            assert false : "Error: Tried to access sound " + soundFile + " and it has not been added to pool";
+        }
+
+        return soundMap.getOrDefault(file.getAbsolutePath(), null);
+    }
+
+    public static Sound addSound(String soundFile, boolean loops) {
+        File file = new File(soundFile);
+        if (soundMap.containsKey(file.getAbsolutePath())) {
+            return soundMap.get(file.getAbsolutePath());
+        } else {
+            Sound s = new Sound(file.getAbsolutePath(), loops);
+            soundMap.put(file.getAbsolutePath(), s);
+            return s;
+        }
+    }
+
+    public static Collection<Sound> getAllSounds() {
+        return soundMap.values();
     }
 }

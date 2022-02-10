@@ -3,13 +3,14 @@ package scenes;
 import components.*;
 import imgui.ImGui;
 import imgui.ImVec2;
-import jade.*;
+import jade.GameObject;
+import jade.Prefabs;
+import jade.Sound;
 import org.joml.Vector2f;
-import org.joml.Vector3f;
-import renderer.DebugDraw;
 import util.AssetPool;
 
-import static org.lwjgl.glfw.GLFW.*;
+import java.io.File;
+import java.util.Collection;
 
 public class LevelEditorSceneInitializer extends SceneInitializer {
 
@@ -51,6 +52,12 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                 new Spritesheet(AssetPool.getTexture("assets/images/items.png"),
                         16, 16, 43, 0));
 
+        //Load sound files
+        File soundFolder = new File("assets/sounds/");
+        File[] files = soundFolder.listFiles();
+        for (File f : files) {
+            AssetPool.addSound(f.getPath(), false);
+        }
 
         for (GameObject go : scene.getGameObjects()) {
             SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
@@ -75,8 +82,8 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
         ImGui.begin("Objects");
 
-        if(ImGui.beginTabBar("WindowTabBar")) {
-            if(ImGui.beginTabItem("Blocks")) {
+        if (ImGui.beginTabBar("WindowTabBar")) {
+            if (ImGui.beginTabItem("Blocks")) {
                 ImVec2 windowPos = new ImVec2();
                 ImGui.getWindowPos(windowPos);
                 ImVec2 windowSize = new ImVec2();
@@ -114,7 +121,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                 ImGui.endTabItem();
             }
 
-            if(ImGui.beginTabItem("Prefabs")) {
+            if (ImGui.beginTabItem("Prefabs")) {
                 Spritesheet playerSprites = AssetPool.getSpritesheet("assets/images/spritesheet.png");
                 Sprite sprite = playerSprites.getSprite(0);
                 float spriteWidth = sprite.getWidth() * 2;
@@ -140,6 +147,42 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                     levelEditorStuff.getComponent(MouseControls.class).pickupObject(object);
                 }
                 ImGui.sameLine();
+
+                ImGui.endTabItem();
+            }
+
+            if (ImGui.beginTabItem("Sounds")) {
+                Collection<Sound> sounds = AssetPool.getAllSounds();
+
+                ImVec2 windowSize = new ImVec2();
+                ImGui.getWindowSize(windowSize);
+                ImVec2 itemSpacing = new ImVec2();
+                ImGui.getStyle().getItemSpacing(itemSpacing);
+
+                float runningWidth = itemSpacing.x * 2;
+
+                for (Sound s : sounds) {
+                    File f = new File(s.getFilePath());
+                    if (ImGui.button(f.getName())) {
+                        if (s.isPlaying()) {
+                            s.stop();
+                        } else {
+                            s.play();
+                        }
+                    }
+
+                    ImVec2 lastButtonSize = new ImVec2();
+                    ImGui.getItemRectSize(lastButtonSize);
+
+                    runningWidth += lastButtonSize.x + itemSpacing.x;
+
+                    if (runningWidth < windowSize.x) {
+                        ImGui.sameLine();
+                    }
+                    else {
+                        runningWidth = 0;
+                    }
+                }
 
                 ImGui.endTabItem();
             }
