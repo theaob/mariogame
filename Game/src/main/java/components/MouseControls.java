@@ -78,6 +78,8 @@ public class MouseControls extends Component {
             } else if (pickedObj == null & !MouseListener.isDragging()) {
                 Window.getInstance().getPropertiesWindow().clearSelected();
             }
+
+            debounce = 0.2f;
         } else if (MouseListener.isDragging() && MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
             if (!boxSelectSet) {
                 Window.getInstance().getPropertiesWindow().clearSelected();
