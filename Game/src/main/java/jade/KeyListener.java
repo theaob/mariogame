@@ -1,5 +1,7 @@
 package jade;
 
+import java.util.Arrays;
+
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -19,6 +21,10 @@ public class KeyListener {
         return instance;
     }
 
+    public static void endFrame() {
+        Arrays.fill(getInstance().keyBeginPressed, false);
+    }
+
     public static void keyCallback(long window, int key, int scanCode, int action, int modifiers) {
         if (key < getInstance().keyPressed.length) {
             if (action == GLFW_PRESS) {
@@ -35,11 +41,7 @@ public class KeyListener {
         return getInstance().keyPressed[keyCode];
     }
 
-    public static boolean keyBeginPress(int glfwKeyD) {
-        boolean result = getInstance().keyBeginPressed[glfwKeyD];
-        if (result) {
-            getInstance().keyBeginPressed[glfwKeyD] = false;
-        }
-        return result;
+    public static boolean keyBeginPress(int keyCode) {
+        return getInstance().keyBeginPressed[keyCode];
     }
 }

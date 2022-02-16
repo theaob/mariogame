@@ -1,5 +1,6 @@
 package components;
 
+import editor.PropertiesWindow;
 import jade.GameObject;
 import jade.KeyListener;
 import jade.MouseListener;
@@ -19,7 +20,7 @@ import static org.lwjgl.glfw.GLFW.GLFW_MOUSE_BUTTON_LEFT;
 
 public class MouseControls extends Component {
     GameObject holdingObject = null;
-    private float debounceTime = 0.09f;
+    private final float debounceTime = 0.2f;
     private float debounce = 0;
 
     private boolean boxSelectSet = false;
@@ -52,7 +53,7 @@ public class MouseControls extends Component {
 
         PickingTexture pickingTexture = Window.getInstance().getPropertiesWindow().getPickingTexture();
 
-        if (holdingObject != null && debounce <= 0) {
+        if (holdingObject != null) {
             holdingObject.transform.position.x = MouseListener.getWorldX();
             holdingObject.transform.position.y = MouseListener.getWorldY();
 
@@ -60,8 +61,15 @@ public class MouseControls extends Component {
             holdingObject.transform.position.y = ((int) Math.floor(holdingObject.transform.position.y / Settings.GRID_HEIGHT) * Settings.GRID_HEIGHT) + Settings.GRID_HEIGHT / 2.0f;
 
             if (MouseListener.mouseButtonDown(GLFW_MOUSE_BUTTON_LEFT)) {
-                place();
-                debounce = debounceTime;
+                float halfWidth = Settings.GRID_WIDTH / 2.0f;
+                float halfHeight = Settings.GRID_HEIGHT / 2.0f;
+                if (MouseListener.isDragging() && !blockInSquare(holdingObject.transform.position.x - halfWidth,
+                        holdingObject.transform.position.y - halfHeight)) {
+                    place();
+                } else if (!MouseListener.isDragging() && debounce < 0) {
+                    place();
+                    debounce = debounceTime;
+                }
             }
 
             if (KeyListener.isKeyPressed(GLFW_KEY_ESCAPE)) {
@@ -120,16 +128,40 @@ public class MouseControls extends Component {
             );
 
             Set<Integer> uniqueGameObjectIds = new HashSet<>();
-            for(float objectID : gameObjectIds) {
-                uniqueGameObjectIds.add((int)objectID);
+            for (float objectID : gameObjectIds) {
+                uniqueGameObjectIds.add((int) objectID);
             }
 
-            for(Integer gameObjectId : uniqueGameObjectIds) {
+            for (Integer gameObjectId : uniqueGameObjectIds) {
                 GameObject pickedObject = Window.getScene().getGameObject(gameObjectId);
-                if(pickedObject != null && gameObject.getComponent(NonPickable.class) == null) {
+                if (pickedObject != null && gameObject.getComponent(NonPickable.class) == null) {
                     Window.getInstance().getPropertiesWindow().addActiveGameObject(pickedObject);
                 }
             }
         }
+    }
+
+    private boolean blockInSquare(float x, float y) {
+        PropertiesWindow pw = Window.getInstance().getPropertiesWindow();
+        Vector2f start = new Vector2f(x, y);
+        Vector2f end = new Vector2f(start).add(new Vector2f(Settings.GRID_WIDTH, Settings.GRID_HEIGHT));
+
+        Vector2f startScreenf = MouseListener.worldToScreen(start);
+        Vector2f endScreenf = MouseListener.worldToScreen(end);
+        Vector2i startScreen = new Vector2i((int) startScreenf.x + 2, (int) startScreenf.y + 2);
+        Vector2i endScreen = new Vector2i((int) endScreenf.x - 2, (int) endScreenf.y - 2);
+
+        float[] gameObjectIds = pw.getPickingTexture().readPixels(startScreen, endScreen);
+
+        for(int i = 0; i < gameObjectIds.length; i++) {
+            if(gameObjectIds[i] >= 0) {
+                GameObject pickedObject = Window.getScene().getGameObject((int) gameObjectIds[i]);
+                if(pickedObject.getComponent(NonPickable.class) == null) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }
