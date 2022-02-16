@@ -127,7 +127,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 rebufferData = true;
             }
 
-            if(spr.gameObject.transform.zIndex != this.zIndex) {
+            if (spr.gameObject.transform.zIndex != this.zIndex) {
                 destroyIfExists(spr.gameObject);
                 renderer.add(spr.gameObject);
                 i--;
@@ -300,7 +300,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
         for (int i = 0; i < numSprites; i++) {
             if (sprites[i].equals(spr)) {
                 for (int j = i; j < numSprites - 1; j++) {
-                    sprites[j] = sprites[j+1];
+                    sprites[j] = sprites[j + 1];
                     sprites[j].setDirty();
                 }
                 numSprites--;

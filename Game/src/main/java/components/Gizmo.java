@@ -63,8 +63,8 @@ public class Gizmo extends Component {
         if (isUsing) {
             this.setInactive();
         }
-        xAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0,0,0,0));
-        yAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0,0,0,0));
+        xAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
+        yAxisObject.getComponent(SpriteRenderer.class).setColor(new Vector4f(0, 0, 0, 0));
     }
 
     @Override
@@ -79,17 +79,7 @@ public class Gizmo extends Component {
             setInactive();
             return;
         } else {
-            if(KeyListener.isKeyPressed(GLFW_KEY_LEFT_CONTROL) && KeyListener.keyBeginPress(GLFW_KEY_D)) {
-                GameObject newGo = this.activeGameObject.copy();
-                newGo.transform.position.add(0.1f, 0.1f);
-                Window.getScene().addGameObjectToScene(newGo);
-                this.propertiesWindow.setActiveGameObject(newGo);
-            } else if (KeyListener.keyBeginPress(GLFW_KEY_DELETE)) {
-                activeGameObject.destroy();
-                setInactive();
-                propertiesWindow.setActiveGameObject(null);
-                return;
-            }
+
 
             this.xAxisObject.transform.position.set(activeGameObject.transform.position);
             this.yAxisObject.transform.position.set(activeGameObject.transform.position);
@@ -121,7 +111,7 @@ public class Gizmo extends Component {
         Vector2f mousePos = MouseListener.getWorld();
         if (mousePos.x <= xAxisObject.transform.position.x + (gizmoHeight / 2.0f) &&
                 mousePos.x >= xAxisObject.transform.position.x - (gizmoWidth / 2.0f) &&
-                mousePos.y >= xAxisObject.transform.position.y - (gizmoHeight / 2.0f)&&
+                mousePos.y >= xAxisObject.transform.position.y - (gizmoHeight / 2.0f) &&
                 mousePos.y <= xAxisObject.transform.position.y + (gizmoWidth / 2.0f)) {
             xAxisSprite.setColor(xAxisColorHover);
             return true;

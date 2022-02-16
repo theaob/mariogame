@@ -1,5 +1,6 @@
 package jade;
 
+import editor.GameViewWindow;
 import editor.PropertiesWindow;
 import observers.EventSystem;
 import observers.Observer;
@@ -42,7 +43,7 @@ public class Window implements Observer {
 
     private Window() {
         this.width = 1920;
-        this.height = 1009;
+        this.height = 1080;
         this.title = "Mario";
         EventSystem.addObserver(this);
     }
@@ -166,7 +167,7 @@ public class Window implements Observer {
         ALCCapabilities alcCapabilities = ALC.createCapabilities(audioDevice);
         ALCapabilities alCapabilities = AL.createCapabilities(alcCapabilities);
 
-        if(!alCapabilities.OpenAL10) {
+        if (!alCapabilities.OpenAL10) {
             assert false : "Audio Library Not Supported!";
         }
 
@@ -223,18 +224,18 @@ public class Window implements Observer {
 
             framebuffer.bind();
 
-            glClearColor(1,1,1,1);
+            glClearColor(1, 1, 1, 1);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
-                DebugDraw.draw();
                 Renderer.bindShader(defaultShader);
-                if(runtimePlaying) {
+                if (runtimePlaying) {
                     currentScene.update(dt);
                 } else {
                     currentScene.editorUpdate(dt);
                 }
                 currentScene.render();
+                DebugDraw.draw();
             }
             framebuffer.unbind();
 
@@ -277,5 +278,9 @@ public class Window implements Observer {
                 Window.changeScene(new LevelEditorSceneInitializer());
                 break;
         }
+    }
+
+    public GameViewWindow getGameViewWindow() {
+        return Window.getInstance().imguiLayer.getGameViewWindow();
     }
 }

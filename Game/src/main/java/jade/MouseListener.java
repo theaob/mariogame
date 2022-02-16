@@ -4,6 +4,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector4f;
 
+import java.util.Arrays;
+
 import static org.lwjgl.glfw.GLFW.GLFW_PRESS;
 import static org.lwjgl.glfw.GLFW.GLFW_RELEASE;
 
@@ -36,6 +38,10 @@ public class MouseListener {
     }
 
     public static void mousePosCallback(long window, double xPos, double yPos) {
+        if (!Window.getInstance().getGameViewWindow().getWantCaptureMouse()) {
+            clear();
+        }
+
         if(getInstance().mouseButtonDown > 0) {
             getInstance().isDragging = true;
         }
@@ -69,6 +75,16 @@ public class MouseListener {
     public static void endFrame() {
         getInstance().scrollX = 0;
         getInstance().scrollY = 0;
+    }
+
+    public static void clear() {
+        getInstance().scrollX = 0;
+        getInstance().scrollY = 0;
+        getInstance().xPos = 0.0;
+        getInstance().yPos = 0.0;
+        getInstance().mouseButtonDown = 0;
+        getInstance().isDragging = false;
+        Arrays.fill(getInstance().mouseButtonPressed, false);
     }
 
     public static float getX() {
@@ -115,12 +131,40 @@ public class MouseListener {
         return new Vector2f(tmp.x, tmp.y);
     }
 
-    public static float getWorldX(){
+    public static float getWorldX() {
         return getWorld().x;
     }
 
     public static float getWorldY() {
         return getWorld().y;
+    }
+
+    public static Vector2f screenToWorld(Vector2f screenCoordinates) {
+        Vector2f normalizedScreenCoordinates = new Vector2f();
+        normalizedScreenCoordinates.set(screenCoordinates.x / Window.getWidth(),
+                screenCoordinates.y / Window.getHeight());
+
+        //Normalize tp [-1,1]
+        normalizedScreenCoordinates.mul(2.0f).sub(new Vector2f(1.0f, 1.0f));
+
+        Camera camera = Window.getScene().getCamera();
+        Vector4f temp = new Vector4f(normalizedScreenCoordinates.x, normalizedScreenCoordinates.y, 0, 1);
+        Matrix4f inverseView = new Matrix4f(camera.getInverseView());
+        Matrix4f inverseProjection = new Matrix4f(camera.getInverseProjection());
+        temp.mul(inverseView.mul(inverseProjection));
+        return new Vector2f(temp.x, temp.y);
+    }
+
+    public static Vector2f worldToScreen(Vector2f worldCoordinates) {
+        Camera camera = Window.getScene().getCamera();
+        Vector4f ndcSpacePosition = new Vector4f(worldCoordinates.x, worldCoordinates.y, 0, 1);
+        Matrix4f view = new Matrix4f(camera.getViewMatrix());
+        Matrix4f projection = new Matrix4f(camera.getProjectionMatrix());
+        ndcSpacePosition.mul(projection.mul(view));
+        Vector2f windowSpace = new Vector2f(ndcSpacePosition.x, ndcSpacePosition.y).mul(1.0f / ndcSpacePosition.w);
+        windowSpace.add(new Vector2f(1.0f, 1.0f)).mul(0.5f);
+        windowSpace.mul(new Vector2f(Window.getWidth(), Window.getHeight()));
+        return windowSpace;
     }
 
     public static float getScreenX() {
