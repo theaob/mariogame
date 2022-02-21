@@ -7,10 +7,7 @@ import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.joml.Vector2f;
-import physics2d.components.Box2DCollider;
-import physics2d.components.CircleCollider;
-import physics2d.components.RaycastInfo;
-import physics2d.components.RigidBody2D;
+import physics2d.components.*;
 
 import javax.swing.*;
 
@@ -22,6 +19,10 @@ public class Physics2D {
     private float physicsTimeStep = 1.0f / 60.0f;
     private int velocityIterations = 8;
     private int positionIterations = 3;
+
+    public Physics2D() {
+        world.setContactListener(new JadeContactListener());
+    }
 
     public void add(GameObject go) {
         RigidBody2D rb = go.getComponent(RigidBody2D.class);
@@ -130,6 +131,31 @@ public class Physics2D {
         return size;
     }
 
+
+    public void resetPillboxCollider(RigidBody2D rb, PillboxCollider pillboxCollider) {
+        Body body = rb.getRawBody();
+
+        if(body == null) return;
+
+        int size = fixtureListSize(body);
+
+        for(int i = 0; i < size; i++) {
+            body.destroyFixture(body.getFixtureList());
+        }
+
+        addPillboxCollider(rb, pillboxCollider);
+        body.resetMassData();
+    }
+
+    public void addPillboxCollider(RigidBody2D rb, PillboxCollider pillboxCollider) {
+        Body body = rb.getRawBody();
+        assert body != null : "Raw body must not be null";
+
+        addBox2DCollider(rb, pillboxCollider.getBox());
+        addCircleCollider(rb, pillboxCollider.getTopCircle());
+        addCircleCollider(rb, pillboxCollider.getBottomCircle());
+    }
+
     public void addBox2DCollider(RigidBody2D rb, Box2DCollider boxCollider) {
         Body body = rb.getRawBody();
         assert body != null : "Raw body must not be null";
@@ -190,5 +216,9 @@ public class Physics2D {
                 fixture = fixture.getNext();
             }
         }
+    }
+
+    public boolean isLocked() {
+        return world.isLocked();
     }
 }
