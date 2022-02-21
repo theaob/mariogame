@@ -51,6 +51,7 @@ public class Physics2D {
             rb.setRawBody(body);
             CircleCollider circleCollider;
             Box2DCollider boxCollider;
+            PillboxCollider pillboxCollider;
 
             if ((circleCollider = go.getComponent(CircleCollider.class)) != null) {
                 addCircleCollider(rb, circleCollider);
@@ -58,6 +59,10 @@ public class Physics2D {
 
             if ((boxCollider = go.getComponent(Box2DCollider.class)) != null) {
                 addBox2DCollider(rb, boxCollider);
+            }
+
+            if((pillboxCollider = go.getComponent(PillboxCollider.class)) != null) {
+                addPillboxCollider(rb, pillboxCollider);
             }
         }
     }
@@ -220,5 +225,9 @@ public class Physics2D {
 
     public boolean isLocked() {
         return world.isLocked();
+    }
+
+    public Vector2f getGravity() {
+        return new Vector2f(this.world.getGravity().x, this.world.getGravity().y);
     }
 }

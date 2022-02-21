@@ -7,6 +7,9 @@ import jade.GameObject;
 import jade.Prefabs;
 import jade.Sound;
 import org.joml.Vector2f;
+import physics2d.components.Box2DCollider;
+import physics2d.components.RigidBody2D;
+import physics2d.enums.BodyType;
 import util.AssetPool;
 
 import java.io.File;
@@ -52,6 +55,15 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
         AssetPool.addSpriteSheet("assets/images/items.png",
                 new Spritesheet(AssetPool.getTexture("assets/images/items.png"),
                         16, 16, 43, 0));
+        AssetPool.addSpriteSheet("assets/images/turtle.png",
+                new Spritesheet(AssetPool.getTexture("assets/images/turtle.png"),
+                        16, 24, 4, 0));
+        AssetPool.addSpriteSheet("assets/images/bigSpritesheet.png",
+                new Spritesheet(AssetPool.getTexture("assets/images/bigSpritesheet.png"),
+                        16, 32, 42, 0));
+        AssetPool.addSpriteSheet("assets/images/pipes.png",
+                new Spritesheet(AssetPool.getTexture("assets/images/pipes.png"),
+                        32, 32, 4, 0));
 
         //Load sound files
         File soundFolder = new File("assets/sounds/");
@@ -94,6 +106,10 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
                 float windowX2 = windowPos.x + windowSize.x;
                 for (int i = 0; i < sprites.size(); i++) {
+                    //TODO This is a very shitty way
+                    if (i == 34) continue;
+                    if (i >= 38 && i < 61) continue;
+
                     Sprite sprite = sprites.getSprite(i);
                     float spriteWidth = sprite.getWidth() * 2;
                     float spriteHeight = sprite.getHeight() * 2;
@@ -103,7 +119,17 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                     ImGui.pushID(i);
                     if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
                         GameObject object = Prefabs.generateSpriteObject(sprite, 0.25f, 0.25f);
-                        // Attach this to cursor
+                        RigidBody2D rb = new RigidBody2D();
+                        rb.setBodyType(BodyType.Static);
+                        object.addComponent(rb);
+                        Box2DCollider b2d = new Box2DCollider();
+                        b2d.setHalfSize(new Vector2f(0.25f, 0.25f));
+                        object.addComponent(b2d);
+                        object.addComponent(new Ground());
+                        //TODO: Fixed is inserted
+                        if (i == 12) {
+                            //object.addComponent(new BreakableBrick());
+                        }
                         levelEditorStuff.getComponent(MouseControls.class).pickupObject(object);
                     }
                     ImGui.popID();
