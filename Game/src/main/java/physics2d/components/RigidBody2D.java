@@ -26,19 +26,27 @@ public class RigidBody2D extends Component {
     @Override
     public void update(float dt) {
         if (rawBody != null) {
-            this.gameObject.transform.position.set(rawBody.getPosition().x, rawBody.getPosition().y);
-            this.gameObject.transform.rotation = (float) Math.toDegrees(rawBody.getAngle());
+            if (bodyType == BodyType.Dynamic || bodyType == BodyType.Kinematic) {
+                this.gameObject.transform.position.set(rawBody.getPosition().x, rawBody.getPosition().y);
+                this.gameObject.transform.rotation = (float) Math.toDegrees(rawBody.getAngle());
+                Vec2 vel = rawBody.getLinearVelocity();
+                velocity.set(vel.x, vel.y);
+            } else {
+                this.rawBody.setTransform(new Vec2(gameObject.transform.position.x, gameObject.transform.position.y),
+                        gameObject.transform.rotation);
+            }
+
         }
     }
 
     public void addVelocity(Vector2f forceToAdd) {
-        if(rawBody != null) {
+        if (rawBody != null) {
             rawBody.applyForceToCenter(new Vec2(velocity.x, velocity.y));
         }
     }
 
     public void addImpulse(Vector2f impulse) {
-        if(rawBody != null) {
+        if (rawBody != null) {
             rawBody.applyLinearImpulse(new Vec2(velocity.x, velocity.y), rawBody.getWorldCenter());
         }
     }
@@ -49,7 +57,7 @@ public class RigidBody2D extends Component {
 
     public void setVelocity(Vector2f velocity) {
         this.velocity.set(velocity);
-        if(rawBody != null) {
+        if (rawBody != null) {
             rawBody.setLinearVelocity(new Vec2(velocity.x, velocity.y));
         }
     }
@@ -124,7 +132,7 @@ public class RigidBody2D extends Component {
 
     public void setAngularVelocity(float angularVelocity) {
         this.angularVelocity = angularVelocity;
-        if(rawBody != null) {
+        if (rawBody != null) {
             rawBody.setAngularVelocity(angularVelocity);
         }
     }
@@ -135,7 +143,7 @@ public class RigidBody2D extends Component {
 
     public void setGravityScale(float gravityScale) {
         this.gravityScale = gravityScale;
-        if(rawBody != null) {
+        if (rawBody != null) {
             rawBody.setGravityScale(gravityScale);
         }
     }
@@ -146,14 +154,14 @@ public class RigidBody2D extends Component {
 
     public void setSensor() {
         isSensor = true;
-        if(rawBody != null) {
+        if (rawBody != null) {
             Window.getPhysics().setSensor(this);
         }
     }
 
     public void setNotSensor() {
         isSensor = false;
-        if(rawBody != null) {
+        if (rawBody != null) {
             Window.getPhysics().setNotSensor(this);
         }
     }

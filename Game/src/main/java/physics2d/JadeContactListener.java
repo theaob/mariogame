@@ -13,7 +13,7 @@ public class JadeContactListener implements ContactListener {
     @Override
     public void beginContact(Contact contact) {
         GameObject objectA = (GameObject) contact.getFixtureA().getUserData();
-        GameObject objectB = (GameObject) contact.getFixtureA().getUserData();
+        GameObject objectB = (GameObject) contact.getFixtureB().getUserData();
 
         WorldManifold worldManifold = new WorldManifold();
         contact.getWorldManifold(worldManifold);
@@ -32,7 +32,7 @@ public class JadeContactListener implements ContactListener {
     @Override
     public void endContact(Contact contact) {
         GameObject objectA = (GameObject) contact.getFixtureA().getUserData();
-        GameObject objectB = (GameObject) contact.getFixtureA().getUserData();
+        GameObject objectB = (GameObject) contact.getFixtureB().getUserData();
 
         WorldManifold worldManifold = new WorldManifold();
         contact.getWorldManifold(worldManifold);
@@ -51,7 +51,7 @@ public class JadeContactListener implements ContactListener {
     @Override
     public void preSolve(Contact contact, Manifold manifold) {
         GameObject objectA = (GameObject) contact.getFixtureA().getUserData();
-        GameObject objectB = (GameObject) contact.getFixtureA().getUserData();
+        GameObject objectB = (GameObject) contact.getFixtureB().getUserData();
 
         WorldManifold worldManifold = new WorldManifold();
         contact.getWorldManifold(worldManifold);
@@ -70,7 +70,7 @@ public class JadeContactListener implements ContactListener {
     @Override
     public void postSolve(Contact contact, ContactImpulse contactImpulse) {
         GameObject objectA = (GameObject) contact.getFixtureA().getUserData();
-        GameObject objectB = (GameObject) contact.getFixtureA().getUserData();
+        GameObject objectB = (GameObject) contact.getFixtureB().getUserData();
 
         WorldManifold worldManifold = new WorldManifold();
         contact.getWorldManifold(worldManifold);

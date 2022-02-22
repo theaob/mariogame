@@ -70,8 +70,6 @@ public class StateMachine extends Component {
                 }
             }
         }
-
-        System.out.println("Unable to find trigger " + trigger);
     }
 
     private int stateIndexOf(String stateTitle) {

@@ -128,7 +128,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                         object.addComponent(new Ground());
                         //TODO: Fixed is inserted
                         if (i == 12) {
-                            //object.addComponent(new BreakableBrick());
+                            object.addComponent(new BreakableBrick());
                         }
                         levelEditorStuff.getComponent(MouseControls.class).pickupObject(object);
                     }
