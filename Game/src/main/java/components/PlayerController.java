@@ -82,7 +82,7 @@ public class PlayerController extends Component {
 
         if (KeyListener.isKeyPressed(GLFW_KEY_SPACE) && (jumpTime > 0 || onGround || groundDebounce > 0)) {
             if ((onGround || groundDebounce > 0) && jumpTime == 0) {
-                AssetPool.getSound("assets/sounds/jump-small.ogg").play();
+                AssetPool.getSound("jump-small.ogg").play();
                 jumpTime = 28;
                 this.velocity.y = jumpImpulse;
             } else if (jumpTime > 0) {

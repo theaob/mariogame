@@ -1,6 +1,8 @@
 package jade;
 
 import components.*;
+import org.joml.Vector2f;
+import physics2d.components.Box2DCollider;
 import physics2d.components.PillboxCollider;
 import physics2d.components.RigidBody2D;
 import physics2d.enums.BodyType;
@@ -18,8 +20,8 @@ public class Prefabs {
     }
 
     public static GameObject generateMario() {
-        Spritesheet playerSprites = AssetPool.getSpritesheet("assets/images/spritesheet.png");
-        Spritesheet bigPlayerSprites = AssetPool.getSpritesheet("assets/images/bigSpritesheet.png");
+        Spritesheet playerSprites = AssetPool.getSpritesheet("spritesheet.png");
+        Spritesheet bigPlayerSprites = AssetPool.getSpritesheet("bigSpritesheet.png");
         GameObject mario = generateSpriteObject(playerSprites.getSprite(0), 0.25f, 0.25f);
 
         AnimationState run = new AnimationState();
@@ -203,22 +205,60 @@ public class Prefabs {
     }
 
     public static GameObject generateQuestionBlock() {
-        Spritesheet playerSprites = AssetPool.getSpritesheet("assets/images/items.png");
+        Spritesheet playerSprites = AssetPool.getSpritesheet("items.png");
         GameObject questionBlock = generateSpriteObject(playerSprites.getSprite(0), 0.25f, 0.25f);
 
-        AnimationState run = new AnimationState();
-        run.title = "Flicker";
+        AnimationState flicker = new AnimationState();
+        flicker.title = "Flicker";
         float defaultFrameTime = 0.23f;
-        run.addFrame(playerSprites.getSprite(0), 0.57f);
-        run.addFrame(playerSprites.getSprite(1), defaultFrameTime);
-        run.addFrame(playerSprites.getSprite(2), defaultFrameTime);
-        run.setLoop(true);
+        flicker.addFrame(playerSprites.getSprite(0), 0.57f);
+        flicker.addFrame(playerSprites.getSprite(1), defaultFrameTime);
+        flicker.addFrame(playerSprites.getSprite(2), defaultFrameTime);
+        flicker.setLoop(true);
+
+        AnimationState inactive = new AnimationState();
+        inactive.title = "Inactive";
+        inactive.addFrame(playerSprites.getSprite(3), 0.1f);
+        inactive.setLoop(false);
 
         StateMachine stateMachine = new StateMachine();
-        stateMachine.addState(run);
-        stateMachine.setDefaultState(run.title);
+        stateMachine.addState(flicker);
+        stateMachine.addState(inactive);
+        stateMachine.addState(flicker.title, inactive.title, "setInactive");
+        stateMachine.setDefaultState(flicker.title);
         questionBlock.addComponent(stateMachine);
+        questionBlock.addComponent(new QuestionBlock());
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Static);
+        questionBlock.addComponent(rb);
+        Box2DCollider b2d = new Box2DCollider();
+        b2d.setHalfSize(new Vector2f(0.25f, 0.25f));
+        questionBlock.addComponent(b2d);
+        questionBlock.addComponent(new Ground());
 
         return questionBlock;
+    }
+
+    public static GameObject generateBlockCoin() {
+        Spritesheet items = AssetPool.getSpritesheet("items.png");
+        GameObject coin = generateSpriteObject(items.getSprite(7), 0.25f, 0.25f);
+
+        AnimationState coinFLip = new AnimationState();
+        coinFLip.title = "CoinFlip";
+        float defaultFrameTime = 0.23f;
+        coinFLip.addFrame(items.getSprite(7), 0.57f);
+        coinFLip.addFrame(items.getSprite(8), defaultFrameTime);
+        coinFLip.addFrame(items.getSprite(9), defaultFrameTime);
+        coinFLip.setLoop(true);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(coinFLip);
+        coin.addComponent(stateMachine);
+        coin.addComponent(new QuestionBlock());
+
+        coin.addComponent(new BlockCoin());
+
+        return coin;
     }
 }

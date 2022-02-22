@@ -26,8 +26,8 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
 
     @Override
     public void init(Scene scene) {
-        sprites = AssetPool.getSpritesheet("assets/images/spritesheets/decorationsAndBlocks.png");
-        Spritesheet gizmos = AssetPool.getSpritesheet("assets/images/gizmos.png");
+        sprites = AssetPool.getSpritesheet("spritesheets/decorationsAndBlocks.png");
+        Spritesheet gizmos = AssetPool.getSpritesheet("gizmos.png");
 
         levelEditorStuff = scene.createGameObject("LevelEditor");
         levelEditorStuff.setNoSerialize();
@@ -149,7 +149,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
             }
 
             if (ImGui.beginTabItem("Prefabs")) {
-                Spritesheet playerSprites = AssetPool.getSpritesheet("assets/images/spritesheet.png");
+                Spritesheet playerSprites = AssetPool.getSpritesheet("spritesheet.png");
                 Sprite sprite = playerSprites.getSprite(0);
                 float spriteWidth = sprite.getWidth() * 2;
                 float spriteHeight = sprite.getHeight() * 2;
@@ -163,7 +163,7 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                 }
                 ImGui.sameLine();
 
-                Spritesheet items = AssetPool.getSpritesheet("assets/images/items.png");
+                Spritesheet items = AssetPool.getSpritesheet("items.png");
                 sprite = items.getSprite(0);
                 id = sprite.getTextId();
                 texCoords = sprite.getTextureCoordinates();

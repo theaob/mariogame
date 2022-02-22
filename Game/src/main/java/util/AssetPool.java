@@ -48,7 +48,7 @@ public class AssetPool {
     }
 
     public static Spritesheet getSpritesheet(String resourceName) {
-        File file = new File(resourceName);
+        File file = new File("assets/images/" + resourceName);
         if (!spritesheetMap.containsKey(file.getAbsolutePath())) {
             assert false : "Error: Tried to access spritesheet " + resourceName + " and it has not been added to pool";
         }
@@ -56,7 +56,7 @@ public class AssetPool {
     }
 
     public static Sound getSound(String soundFile) {
-        File file = new File(soundFile);
+        File file = new File("assets/sounds/"+soundFile);
         if (!soundMap.containsKey(file.getAbsolutePath())) {
             assert false : "Error: Tried to access sound " + soundFile + " and it has not been added to pool";
         }
