@@ -26,6 +26,7 @@ public class Scene {
     private Camera camera;
     private boolean isRunning = false;
     private final List<GameObject> gameObjectList;
+    private final List<GameObject> pendingGameObjects;
     private final Physics2D physics2D;
 
     private final SceneInitializer sceneInitializer;
@@ -35,6 +36,7 @@ public class Scene {
         this.physics2D = new Physics2D();
         this.renderer = new Renderer();
         this.gameObjectList = new ArrayList<>();
+        this.pendingGameObjects = new ArrayList<>();
     }
 
     public void init() {
@@ -54,12 +56,10 @@ public class Scene {
     }
 
     public void addGameObjectToScene(GameObject go) {
-        gameObjectList.add(go);
-
         if (isRunning) {
-            go.start();
-            this.renderer.add(go);
-            this.physics2D.add(go);
+            pendingGameObjects.add(go);
+        } else {
+            gameObjectList.add(go);
         }
     }
 
@@ -70,13 +70,22 @@ public class Scene {
             GameObject go = gameObjectList.get(i);
             go.editorUpdate(dt);
 
-            if(go.isDead()) {
+            if (go.isDead()) {
                 gameObjectList.remove(go);
                 this.renderer.destroyGameObject(go);
                 this.physics2D.destroyGameObject(go);
                 i--;
             }
         }
+
+        for (GameObject go : pendingGameObjects) {
+            this.gameObjectList.add(go);
+            go.start();
+            this.renderer.add(go);
+            this.physics2D.add(go);
+        }
+
+        pendingGameObjects.clear();
     }
 
     public void update(float dt) {
@@ -87,13 +96,22 @@ public class Scene {
             GameObject go = gameObjectList.get(i);
             go.update(dt);
 
-            if(go.isDead()) {
+            if (go.isDead()) {
                 gameObjectList.remove(go);
                 this.renderer.destroyGameObject(go);
                 this.physics2D.destroyGameObject(go);
                 i--;
             }
         }
+
+        for (GameObject go : pendingGameObjects) {
+            this.gameObjectList.add(go);
+            go.start();
+            this.renderer.add(go);
+            this.physics2D.add(go);
+        }
+
+        pendingGameObjects.clear();
     }
 
     public void render() {

@@ -122,13 +122,13 @@ public class RenderBatch implements Comparable<RenderBatch> {
         for (int i = 0; i < numSprites; i++) {
             SpriteRenderer spr = sprites[i];
             if (spr.isDirty()) {
-                if (!hasTexture(spr.getTexture())) {
-                    renderer.destroyGameObject(spr.gameObject);
-                    renderer.add(spr.gameObject);
-                } else {
+                if (hasTexture(spr.getTexture())) {
                     loadVertexProperties(i);
                     spr.setClean();
                     rebufferData = true;
+                } else {
+                    this.renderer.destroyGameObject(spr.gameObject);
+                    this.renderer.add(spr.gameObject);
                 }
             }
 
@@ -301,9 +301,9 @@ public class RenderBatch implements Comparable<RenderBatch> {
     }
 
     public boolean destroyIfExists(GameObject go) {
-        SpriteRenderer spr = go.getComponent(SpriteRenderer.class);
+        SpriteRenderer sprite = go.getComponent(SpriteRenderer.class);
         for (int i = 0; i < numSprites; i++) {
-            if (sprites[i].equals(spr)) {
+            if (sprites[i] == sprite) {
                 for (int j = i; j < numSprites - 1; j++) {
                     sprites[j] = sprites[j + 1];
                     sprites[j].setDirty();
@@ -312,6 +312,7 @@ public class RenderBatch implements Comparable<RenderBatch> {
                 return true;
             }
         }
+
         return false;
     }
 }

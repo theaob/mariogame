@@ -41,13 +41,13 @@ public class RigidBody2D extends Component {
 
     public void addVelocity(Vector2f forceToAdd) {
         if (rawBody != null) {
-            rawBody.applyForceToCenter(new Vec2(velocity.x, velocity.y));
+            rawBody.applyForceToCenter(new Vec2(forceToAdd.x, forceToAdd.y));
         }
     }
 
     public void addImpulse(Vector2f impulse) {
         if (rawBody != null) {
-            rawBody.applyLinearImpulse(new Vec2(velocity.x, velocity.y), rawBody.getWorldCenter());
+            rawBody.applyLinearImpulse(new Vec2(impulse.x, impulse.y), rawBody.getWorldCenter());
         }
     }
 

@@ -6,6 +6,7 @@ import jade.Window;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import physics2d.components.PillboxCollider;
 import physics2d.components.RaycastInfo;
 import physics2d.components.RigidBody2D;
 import renderer.DebugDraw;
@@ -162,5 +163,25 @@ public class PlayerController extends Component {
 
     public boolean isSmall() {
         return playerState == PlayerState.Small;
+    }
+
+    public void powerUp() {
+        if (playerState == PlayerState.Small) {
+            playerState = PlayerState.Big;
+            AssetPool.getSound("powerup.ogg").play();
+            gameObject.transform.scale.y = 0.42f;
+            PillboxCollider pb = gameObject.getComponent(PillboxCollider.class);
+            if( pb != null) {
+                jumpBoost *= bigJumpBoostFactor;
+                walkSpeed *= bigJumpBoostFactor;
+
+                pb.setHeight(0.63f);
+            }
+        } else if (playerState == PlayerState.Big) {
+            playerState = PlayerState.Fire;
+            AssetPool.getSound("powerup.ogg").play();
+        }
+
+        stateMachine.trigger("powerup");
     }
 }

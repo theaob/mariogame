@@ -100,6 +100,7 @@ public class StateMachine extends Component {
             SpriteRenderer sprite = gameObject.getComponent(SpriteRenderer.class);
             if (sprite != null) {
                 sprite.setSprite(currentState.getCurrentSprite());
+                sprite.setTexture(currentState.getCurrentSprite().getTexture());
             }
         }
     }
@@ -111,6 +112,7 @@ public class StateMachine extends Component {
             SpriteRenderer sprite = gameObject.getComponent(SpriteRenderer.class);
             if (sprite != null) {
                 sprite.setSprite(currentState.getCurrentSprite());
+                sprite.setTexture(currentState.getCurrentSprite().getTexture());
             }
         }
     }
