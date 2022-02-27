@@ -272,4 +272,8 @@ public class PlayerController extends Component {
         }
     }
 
+    public void setPosition(Vector2f newPosition) {
+        gameObject.transform.position.set(newPosition);
+        rb.setPosition(newPosition);
+    }
 }

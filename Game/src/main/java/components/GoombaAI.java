@@ -19,7 +19,7 @@ public class GoombaAI extends Component {
     private transient float walkSpeed = 0.6f;
     private transient Vector2f velocity = new Vector2f();
     private transient Vector2f acceleration = new Vector2f();
-    private transient Vector2f terminalVelocity = new Vector2f();
+    private transient Vector2f terminalVelocity = new Vector2f(1.6f, 1.6f);
     private transient boolean isDead = false;
     private transient float timeToKill = 0.5f;
     private transient StateMachine stateMachine;
@@ -60,6 +60,7 @@ public class GoombaAI extends Component {
             this.acceleration.y = 0;
             this.velocity.y = 0;
         } else {
+            this.velocity.x = 0;
             this.acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
         }
 

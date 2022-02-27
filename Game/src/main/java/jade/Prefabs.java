@@ -9,6 +9,7 @@ import physics2d.components.RigidBody2D;
 import physics2d.enums.BodyType;
 import util.AssetPool;
 
+
 public class Prefabs {
     public static GameObject generateSpriteObject(Sprite sprite, float width, float height) {
         GameObject block = Window.getScene().createGameObject("Sprite_Object_gen");
@@ -335,5 +336,43 @@ public class Prefabs {
         goomba.addComponent(new GoombaAI());
 
         return goomba;
+    }
+
+    public static GameObject generatePipe(Direction direction) {
+        Spritesheet items = AssetPool.getSpritesheet("pipes.png");
+        int index = -1;
+        switch (direction) {
+            case Down -> {
+                index = 0;
+            }
+            case Up -> {
+                index = 1;
+            }
+            case Right -> {
+                index = 2;
+            }
+            case Left -> {
+                index = 3;
+            }
+        }
+
+        assert index != -1 : "Invalid pipe direction!";
+
+        GameObject pipe = generateSpriteObject(items.getSprite(index), 0.5f, 0.5f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Static);
+        rb.setFixedRotation(true);
+        rb.setContinuousCollision(false);
+        pipe.addComponent(rb);
+
+        Box2DCollider box2DCollider = new Box2DCollider();
+        box2DCollider.setHalfSize(new Vector2f(0.5f, 0.5f));
+        pipe.addComponent(box2DCollider);
+
+        pipe.addComponent(new Ground());
+        pipe.addComponent(new Pipe(direction));
+
+        return pipe;
     }
 }

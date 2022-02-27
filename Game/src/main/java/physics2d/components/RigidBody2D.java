@@ -165,4 +165,10 @@ public class RigidBody2D extends Component {
             Window.getPhysics().setNotSensor(this);
         }
     }
+
+    public void setPosition(Vector2f newPosition) {
+        if (rawBody != null) {
+            rawBody.setTransform(new Vec2(newPosition.x, newPosition.y), gameObject.transform.rotation);
+        }
+    }
 }

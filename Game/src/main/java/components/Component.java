@@ -77,6 +77,8 @@ public abstract class Component {
                     if (ImGui.combo(f.getName(), index, enumValues, enumValues.length)) {
                         f.set(this, type.getEnumConstants()[index.get()]);
                     }
+                } else if (type == String.class) {
+                    f.set(this, JImGui.inputText(f.getName(), (String)value));
                 }
 
                 if (isPrivate) {
@@ -89,8 +91,8 @@ public abstract class Component {
     }
 
     private int indexOf(String enumType, String[] enumValues) {
-        for(int i = 0; i < enumValues.length; i++) {
-            if(enumType.equals(enumValues[i])) {
+        for (int i = 0; i < enumValues.length; i++) {
+            if (enumType.equals(enumValues[i])) {
                 return i;
             }
         }
@@ -100,7 +102,7 @@ public abstract class Component {
     private <T extends Enum<T>> String[] getEnumValues(Class<T> enumType) {
         String[] enumValues = new String[enumType.getEnumConstants().length];
         int i = 0;
-        for( T enumIntegerValue : enumType.getEnumConstants()) {
+        for (T enumIntegerValue : enumType.getEnumConstants()) {
             enumValues[i] = enumIntegerValue.name();
             i++;
         }
