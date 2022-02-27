@@ -1,13 +1,18 @@
 package physics2d;
 
+import components.Ground;
+import components.PlayerState;
 import jade.GameObject;
 import jade.Transform;
+import jade.Window;
 import org.jbox2d.collision.shapes.CircleShape;
 import org.jbox2d.collision.shapes.PolygonShape;
 import org.jbox2d.common.Vec2;
 import org.jbox2d.dynamics.*;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import physics2d.components.*;
+import renderer.DebugDraw;
 
 import javax.swing.*;
 
@@ -229,5 +234,23 @@ public class Physics2D {
 
     public Vector2f getGravity() {
         return new Vector2f(this.world.getGravity().x, this.world.getGravity().y);
+    }
+
+    public static boolean checkOnGround(GameObject gameObject, float innerPlayerWidth, float height) {
+        Vector2f raycastBegin = new Vector2f(gameObject.transform.position);
+        raycastBegin.sub(innerPlayerWidth / 2.0f, 0.0f);
+        Vector2f raycastEnd = new Vector2f(raycastBegin).add(0.0f, height);
+
+        RaycastInfo info = Window.getPhysics().raycast(gameObject, raycastBegin, raycastEnd);
+
+        Vector2f raycast2Begin = new Vector2f(raycastBegin).add(innerPlayerWidth, 0.0f);
+        Vector2f raycast2End = new Vector2f(raycastEnd).add(innerPlayerWidth, 0.0f);
+        RaycastInfo info2 = Window.getScene().getPhysics().raycast(gameObject, raycast2Begin, raycast2End);
+
+        DebugDraw.addLine2D(raycastBegin, raycastEnd, new Vector3f(1, 0, 0));
+        DebugDraw.addLine2D(raycast2Begin, raycast2End, new Vector3f(1, 0, 0));
+
+        return (info.hit && info.hitObject != null && info.hitObject.getComponent(Ground.class) != null) ||
+                (info2.hit && info2.hitObject != null && info2.hitObject.getComponent(Ground.class) != null);
     }
 }

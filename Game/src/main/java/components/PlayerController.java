@@ -6,10 +6,14 @@ import jade.Window;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import physics2d.Physics2D;
 import physics2d.components.PillboxCollider;
 import physics2d.components.RaycastInfo;
 import physics2d.components.RigidBody2D;
+import physics2d.enums.BodyType;
 import renderer.DebugDraw;
+import scenes.LevelEditorSceneInitializer;
 import util.AssetPool;
 
 import java.security.Key;
@@ -37,15 +41,61 @@ public class PlayerController extends Component {
     private transient int enemyBounce = 0;
     private PlayerState playerState = PlayerState.Small;
 
+    private transient float hurtInvincibilityTimeLeft = 0;
+    private transient float hurtInvincibilityTime = 1.4f;
+    private transient float deadMaxHeight = 0;
+    private transient float deadMinHeight = 0;
+    private transient boolean deadGoingUp = true;
+    private transient float blinkTime = 0.0f;
+    private transient SpriteRenderer spr;
+
     @Override
     public void start() {
         this.rb = gameObject.getComponent(RigidBody2D.class);
         this.stateMachine = gameObject.getComponent(StateMachine.class);
         this.rb.setGravityScale(0.0f);
+        spr = gameObject.getComponent(SpriteRenderer.class);
     }
 
     @Override
     public void update(float dt) {
+        if (isDead) {
+            if (gameObject.transform.position.y < deadMaxHeight && deadGoingUp) {
+                gameObject.transform.position.y += dt * walkSpeed / 2.0f;
+            } else if (gameObject.transform.position.y >= deadMaxHeight && deadGoingUp) {
+                deadGoingUp = false;
+            } else if (!deadGoingUp && gameObject.transform.position.y > deadMinHeight) {
+                rb.setBodyType(BodyType.Kinematic);
+                acceleration.y = Window.getPhysics().getGravity().y * 0.7f;
+                this.velocity.y += acceleration.y * dt;
+                this.velocity.y = Math.max(Math.min(this.velocity.y, this.terminalVelocity.y), -this.terminalVelocity.y);
+                rb.setVelocity(velocity);
+                rb.setAngularVelocity(0);
+            } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
+                Window.changeScene(new LevelEditorSceneInitializer());
+            }
+
+            return;
+        }
+
+        if (hurtInvincibilityTimeLeft > 0) {
+            hurtInvincibilityTimeLeft -= dt;
+            blinkTime -= dt;
+
+            if (blinkTime <= 0) {
+                blinkTime = 0.2f;
+                if (spr.getColor().w == 1) {
+                    spr.setColor(new Vector4f(1, 1, 1, 0));
+                } else {
+                    spr.setColor(new Vector4f(1, 1, 1, 1));
+                }
+            } else {
+                if (spr.getColor().w == 0) {
+                    spr.setColor(new Vector4f(1, 1, 1, 1));
+                }
+            }
+        }
+
         if (KeyListener.isKeyPressed(GLFW_KEY_RIGHT) || KeyListener.isKeyPressed(GLFW_KEY_D)) {
             this.gameObject.transform.scale.x = playerWidth;
             this.acceleration.x = walkSpeed;
@@ -95,7 +145,8 @@ public class PlayerController extends Component {
 
             groundDebounce = 0;
         } else if (enemyBounce > 0) {
-            //TODO
+            enemyBounce--;
+            this.velocity.y = ((enemyBounce / 2.2f) * jumpBoost);
         } else if (!onGround) {
             if (this.jumpTime > 0) {
                 this.velocity.y *= 0.35f;
@@ -124,35 +175,20 @@ public class PlayerController extends Component {
     }
 
     public void checkOnGround() {
-        Vector2f raycastBegin = new Vector2f(this.gameObject.transform.position);
         float innerPlayerWidth = this.playerWidth * 0.6f;
-        raycastBegin.sub(innerPlayerWidth / 2.0f, 0.0f);
         float yVal = (playerState == PlayerState.Small) ? -0.14f : -0.24f;
-        Vector2f raycastEnd = new Vector2f(raycastBegin).add(0.0f, yVal);
-
-        RaycastInfo info = Window.getPhysics().raycast(gameObject, raycastBegin, raycastEnd);
-
-        Vector2f raycast2Begin = new Vector2f(raycastBegin).add(innerPlayerWidth, 0.0f);
-        Vector2f raycast2End = new Vector2f(raycastEnd).add(innerPlayerWidth, 0.0f);
-        RaycastInfo info2 = Window.getScene().getPhysics().raycast(gameObject, raycast2Begin, raycast2End);
-
-        onGround = (info.hit && info.hitObject != null && info.hitObject.getComponent(Ground.class) != null) ||
-                (info2.hit && info2.hitObject != null && info2.hitObject.getComponent(Ground.class) != null);
-
-
-        DebugDraw.addLine2D(raycastBegin, raycastEnd, new Vector3f(1, 0, 0));
-        DebugDraw.addLine2D(raycast2Begin, raycast2End, new Vector3f(1, 0, 0));
+        onGround = Physics2D.checkOnGround(this.gameObject, innerPlayerWidth, yVal);
     }
 
     @Override
     public void beginCollision(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
         if (isDead) return;
 
-        if(collidingObject.getComponent(Ground.class) != null) {
-            if(Math.abs(hitNormal.x) > 0.8f) {
+        if (collidingObject.getComponent(Ground.class) != null) {
+            if (Math.abs(hitNormal.x) > 0.8f) {
                 //Hit horizontally
                 this.velocity.x = 0;
-            } else if(hitNormal.y > 0.8f) {
+            } else if (hitNormal.y > 0.8f) {
                 //hitting the bottom of block
                 this.velocity.y = 0;
                 this.acceleration.y = 0;
@@ -171,7 +207,7 @@ public class PlayerController extends Component {
             AssetPool.getSound("powerup.ogg").play();
             gameObject.transform.scale.y = 0.42f;
             PillboxCollider pb = gameObject.getComponent(PillboxCollider.class);
-            if( pb != null) {
+            if (pb != null) {
                 jumpBoost *= bigJumpBoostFactor;
                 walkSpeed *= bigJumpBoostFactor;
 
@@ -184,4 +220,56 @@ public class PlayerController extends Component {
 
         stateMachine.trigger("powerup");
     }
+
+    public void enemyBounce() {
+        this.enemyBounce = 8;
+    }
+
+    public boolean isDead() {
+        return isDead;
+    }
+
+    public boolean isHurtInvincible() {
+        return hurtInvincibilityTimeLeft > 0;
+    }
+
+    public boolean isInvincible() {
+        return playerState == PlayerState.Invincible || hurtInvincibilityTimeLeft > 0;
+    }
+
+    public void die() {
+        stateMachine.trigger("die");
+        if (playerState == PlayerState.Small) {
+            this.velocity.zero();
+            this.acceleration.zero();
+            rb.setVelocity(new Vector2f());
+            isDead = true;
+            rb.setSensor();
+
+            AssetPool.getSound("mario_die.ogg").play();
+            deadMaxHeight = gameObject.transform.position.y + 0.3f;
+            rb.setBodyType(BodyType.Static);
+
+            if (gameObject.transform.position.y > 0) {
+                deadMinHeight = -0.25f;
+            }
+        } else if (playerState == PlayerState.Big) {
+            this.playerState = PlayerState.Small;
+            gameObject.transform.scale.y = 0.25f;
+            PillboxCollider pb = gameObject.getComponent(PillboxCollider.class);
+            if (pb != null) {
+                jumpBoost /= bigJumpBoostFactor;
+                walkSpeed /= bigJumpBoostFactor;
+                pb.setHeight(0.31f);
+            }
+
+            hurtInvincibilityTimeLeft = hurtInvincibilityTime;
+            AssetPool.getSound("pipe.ogg").play();
+        } else if (playerState == PlayerState.Fire) {
+            playerState = PlayerState.Big;
+            hurtInvincibilityTimeLeft = hurtInvincibilityTime;
+            AssetPool.getSound("pipe.ogg").play();
+        }
+    }
+
 }
