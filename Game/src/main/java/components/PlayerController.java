@@ -14,6 +14,7 @@ import physics2d.components.RigidBody2D;
 import physics2d.enums.BodyType;
 import renderer.DebugDraw;
 import scenes.LevelEditorSceneInitializer;
+import scenes.LevelSceneInitializer;
 import util.AssetPool;
 
 import java.security.Key;
@@ -72,7 +73,7 @@ public class PlayerController extends Component {
                 rb.setVelocity(velocity);
                 rb.setAngularVelocity(0);
             } else if (!deadGoingUp && gameObject.transform.position.y <= deadMinHeight) {
-                Window.changeScene(new LevelEditorSceneInitializer());
+                Window.changeScene(new LevelSceneInitializer());
             }
 
             return;
@@ -275,5 +276,9 @@ public class PlayerController extends Component {
     public void setPosition(Vector2f newPosition) {
         gameObject.transform.position.set(newPosition);
         rb.setPosition(newPosition);
+    }
+
+    public boolean hasWon() {
+        return false;
     }
 }

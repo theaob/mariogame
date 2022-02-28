@@ -16,7 +16,7 @@ public class Pipe extends Component {
     private String connectingPipeName = "";
     private boolean isEntrance = false;
     private transient GameObject connectingPipe = null;
-    private transient float entranceVectorTolerance = 0.7f;
+    private transient float entranceVectorTolerance = 0.6f;
     private transient PlayerController collidingPlayer = null;
 
     public Pipe(Direction direction) {

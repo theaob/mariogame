@@ -3,13 +3,16 @@ package jade;
 import org.joml.Matrix4f;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
+import org.joml.Vector4f;
+import org.lwjgl.assimp.AICamera;
 
 public class Camera {
+    public Vector4f clearColor = new Vector4f(1, 1, 1, 1);
     private Matrix4f projectionMatrix, viewMatrix, inverseProjection, inverseView;
     public Vector2f position;
     private float projectionWidth = 6;
     private float getProjectionHeight = 3;
-    private Vector2f projectionSize = new Vector2f(projectionWidth,getProjectionHeight);
+    private Vector2f projectionSize = new Vector2f(projectionWidth, getProjectionHeight);
     private float zoom = 1.0f;
 
     public Camera(Vector2f position) {

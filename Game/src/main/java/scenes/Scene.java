@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import components.Component;
 import components.ComponentDeserializer;
+import components.PlayerController;
 import jade.Camera;
 import jade.GameObject;
 import jade.GameObjectDeserializer;
@@ -223,5 +224,14 @@ public class Scene {
 
     public Physics2D getPhysics() {
         return physics2D;
+    }
+
+    public <T extends Component> GameObject getGameObjectWith(Class<T> componentClass) {
+        for (GameObject go : gameObjectList) {
+            if (go.getComponent(componentClass) != null) {
+                return go;
+            }
+        }
+        return null;
     }
 }

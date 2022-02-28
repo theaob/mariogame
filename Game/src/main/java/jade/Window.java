@@ -6,6 +6,7 @@ import observers.EventSystem;
 import observers.Observer;
 import observers.events.Event;
 import observers.events.EventType;
+import org.joml.Vector4f;
 import org.lwjgl.Version;
 import org.lwjgl.glfw.*;
 import org.lwjgl.openal.AL;
@@ -17,6 +18,7 @@ import physics2d.Physics2D;
 import physics2d.components.RigidBody2D;
 import renderer.*;
 import scenes.LevelEditorSceneInitializer;
+import scenes.LevelSceneInitializer;
 import scenes.Scene;
 import scenes.SceneInitializer;
 import util.AssetPool;
@@ -214,7 +216,8 @@ public class Window implements Observer {
 
             pickingTexture.enableWriting();
             glViewport(0, 0, 1920, 1080);
-            glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+
+            glClearColor(0,0,0,0);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
             Renderer.bindShader(pickingShader);
@@ -230,7 +233,8 @@ public class Window implements Observer {
 
             framebuffer.bind();
 
-            glClearColor(1, 1, 1, 1);
+            Vector4f clearColor = currentScene.getCamera().clearColor;
+            glClearColor(clearColor.x, clearColor.y, clearColor.z, clearColor.w);
             glClear(GL_COLOR_BUFFER_BIT);
 
             if (dt >= 0) {
@@ -272,7 +276,7 @@ public class Window implements Observer {
             case GameEngineStartPlay:
                 this.runtimePlaying = true;
                 currentScene.save();
-                Window.changeScene(new LevelEditorSceneInitializer());
+                Window.changeScene(new LevelSceneInitializer());
                 break;
             case GameEnginStopPlay:
                 this.runtimePlaying = false;
