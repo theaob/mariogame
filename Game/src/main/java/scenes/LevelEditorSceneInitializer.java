@@ -234,6 +234,20 @@ public class LevelEditorSceneInitializer extends SceneInitializer {
                 ImGui.popID();
                 ImGui.sameLine();
 
+                Spritesheet turtle = AssetPool.getSpritesheet("turtle.png");
+                sprite = turtle.getSprite(0);
+                id = sprite.getTextId();
+                texCoords = sprite.getTextureCoordinates();
+                ImGui.pushID(uid++);
+
+                if (ImGui.imageButton(id, spriteWidth, spriteHeight, texCoords[2].x, texCoords[0].y, texCoords[0].x, texCoords[2].y)) {
+                    GameObject object = Prefabs.generateTurtle();
+                    // Attach this to cursor
+                    levelEditorStuff.getComponent(MouseControls.class).pickupObject(object);
+                }
+                ImGui.popID();
+                ImGui.sameLine();
+
                 Spritesheet pipes = AssetPool.getSpritesheet("pipes.png");
                 sprite = pipes.getSprite(0);
                 id = sprite.getTextId();

@@ -375,4 +375,43 @@ public class Prefabs {
 
         return pipe;
     }
+
+    public static GameObject generateTurtle() {
+        Spritesheet sprites = AssetPool.getSpritesheet("turtle.png");
+        GameObject turtle = generateSpriteObject(sprites.getSprite(0), 0.25f, 0.35f);
+
+        AnimationState walk = new AnimationState();
+        walk.title = "Walk";
+        float defaultFrameTime = 0.23f;
+        walk.addFrame(sprites.getSprite(0), defaultFrameTime);
+        walk.addFrame(sprites.getSprite(1), defaultFrameTime);
+        walk.setLoop(true);
+
+        AnimationState shellSpin = new AnimationState();
+        shellSpin.title = "TurtleShellSpin";
+        shellSpin.addFrame(sprites.getSprite(2), 0.1f);
+        shellSpin.setLoop(false);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(walk);
+        stateMachine.addState(shellSpin);
+        stateMachine.setDefaultState(walk.title);
+        stateMachine.addState(walk.title, shellSpin.title, "squashMe");
+        turtle.addComponent(stateMachine);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Dynamic);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        turtle.addComponent(rb);
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.13f);
+        circleCollider.setOffset(new Vector2f(0, -0.05f));
+        turtle.addComponent(circleCollider);
+
+        turtle.addComponent(new TurtleAI());
+
+        return turtle;
+    }
 }

@@ -32,8 +32,9 @@ public class GameCamera extends Component {
     @Override
     public void update(float dt) {
         if (player != null && !player.getComponent(PlayerController.class).hasWon()) {
-            sceneCamera.position.x = Math.max(player.transform.position.x - 2.5f, highestX);
-            highestX = Math.max(highestX, sceneCamera.position.x);
+            sceneCamera.position.x = player.transform.position.x - 2.5f;
+            //sceneCamera.position.x = Math.max(player.transform.position.x - 2.5f, highestX);
+            //highestX = Math.max(highestX, sceneCamera.position.x);
 
             if(player.transform.position.y < -playerHeight) {
                 this.sceneCamera.position.y = undergroundYLevel;

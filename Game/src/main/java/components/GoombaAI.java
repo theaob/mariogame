@@ -101,7 +101,7 @@ public class GoombaAI extends Component {
         stomp(true);
     }
 
-    private void stomp(boolean playSound) {
+    public void stomp(boolean playSound) {
         this.isDead = true;
         this.velocity.zero();
         this.rb.setVelocity(new Vector2f());
