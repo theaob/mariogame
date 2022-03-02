@@ -40,28 +40,32 @@ public class Pipe extends Component {
                 case Up -> {
                     if ((KeyListener.isKeyPressed(GLFW_KEY_DOWN)
                             || KeyListener.isKeyPressed(GLFW_KEY_S))
-                            && isEntrance) {
+                            && isEntrance
+                            && playerAtEntrance()) {
                         playerEntering = true;
                     }
                 }
                 case Down -> {
                     if ((KeyListener.isKeyPressed(GLFW_KEY_UP)
                             || KeyListener.isKeyPressed(GLFW_KEY_W))
-                            && isEntrance) {
+                            && isEntrance
+                            && playerAtEntrance()) {
                         playerEntering = true;
                     }
                 }
                 case Right -> {
                     if ((KeyListener.isKeyPressed(GLFW_KEY_LEFT)
                             || KeyListener.isKeyPressed(GLFW_KEY_A))
-                            && isEntrance) {
+                            && isEntrance
+                            && playerAtEntrance()) {
                         playerEntering = true;
                     }
                 }
                 case Left -> {
                     if ((KeyListener.isKeyPressed(GLFW_KEY_RIGHT)
                             || KeyListener.isKeyPressed(GLFW_KEY_D))
-                            && isEntrance) {
+                            && isEntrance
+                            && playerAtEntrance()) {
                         playerEntering = true;
                     }
                 }
@@ -72,6 +76,36 @@ public class Pipe extends Component {
                 AssetPool.getSound("pipe.ogg").play();
             }
         }
+    }
+
+    private boolean playerAtEntrance() {
+        if(collidingPlayer == null) {
+            return false;
+        }
+
+        Vector2f min = new Vector2f(gameObject.transform.position).
+                sub(new Vector2f(gameObject.transform.scale).mul(0.5f));
+        Vector2f max = new Vector2f(gameObject.transform.position).
+                add(new Vector2f(gameObject.transform.scale).mul(0.5f));
+        Vector2f playerMax = new Vector2f(collidingPlayer.gameObject.transform.position).
+                add(new Vector2f(collidingPlayer.gameObject.transform.scale).mul(0.5f));
+        Vector2f playerMin = new Vector2f(collidingPlayer.gameObject.transform.position).
+                sub(new Vector2f(collidingPlayer.gameObject.transform.scale).mul(0.5f));
+
+        return switch (direction) {
+            case Up -> playerMin.y >= max.y &&
+                    playerMax.x > min.x &&
+                    playerMin.x < max.x;
+            case Down -> playerMax.y <= min.y &&
+                    playerMax.x > min.x &&
+                    playerMin.x < max.x;
+            case Right -> playerMax.x <= min.x &&
+                    playerMax.y > min.y &&
+                    playerMin.y < max.y;
+            case Left -> playerMin.x >= max.x &&
+                    playerMax.y > min.y &&
+                    playerMin.y < max.y;
+        };
     }
 
     private Vector2f getPlayerPosition(GameObject pipe) {
@@ -100,29 +134,6 @@ public class Pipe extends Component {
         PlayerController playerController = collidingObject.getComponent(PlayerController.class);
 
         if (playerController != null) {
-            switch (direction) {
-                case Down -> {
-                    if(hitNormal.y > -entranceVectorTolerance) {
-                        return;
-                    }
-                }
-                case Up -> {
-                    if(hitNormal.y < entranceVectorTolerance) {
-                        return;
-                    }
-                }
-                case Left -> {
-                    if(hitNormal.x > -entranceVectorTolerance) {
-                        return;
-                    }
-                }
-                case Right -> {
-                    if(hitNormal.x < entranceVectorTolerance) {
-                        return;
-                    }
-                }
-            }
-
             collidingPlayer = playerController;
         }
     }

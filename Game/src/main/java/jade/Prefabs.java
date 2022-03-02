@@ -452,4 +452,23 @@ public class Prefabs {
 
         return flagpole;
     }
+
+    public static GameObject generateFireball(Vector2f position) {
+        Spritesheet sprites = AssetPool.getSpritesheet("items.png");
+        GameObject fireball = generateSpriteObject(sprites.getSprite(32), 0.18f, 0.18f);
+        fireball.transform.position.set(position);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Dynamic);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        fireball.addComponent(rb);
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.08f);
+        fireball.addComponent(circleCollider);
+        fireball.addComponent(new Fireball());
+
+        return fireball;
+    }
 }

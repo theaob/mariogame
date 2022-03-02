@@ -120,6 +120,12 @@ public class TurtleAI extends Component {
                 AssetPool.getSound("bump.ogg").play();
             }
         }
+
+        Fireball fb = collidingObject.getComponent(Fireball.class);
+        if (fb != null) {
+            stomp();
+            fb.disappear();
+        }
     }
 
     @Override

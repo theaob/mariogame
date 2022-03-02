@@ -9,8 +9,6 @@ import physics2d.Physics2D;
 import physics2d.components.RigidBody2D;
 import util.AssetPool;
 
-import javax.swing.plaf.nimbus.State;
-
 public class GoombaAI extends Component {
 
     private transient boolean onGround = false;
@@ -94,6 +92,12 @@ public class GoombaAI extends Component {
             }
         } else if (Math.abs(hitNormal.y) < 0.1f) {
             goingRight = hitNormal.x < 0;
+        }
+
+        Fireball fb = collidingObject.getComponent(Fireball.class);
+        if (fb != null) {
+            stomp();
+            fb.disappear();
         }
     }
 
