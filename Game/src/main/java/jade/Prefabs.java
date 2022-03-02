@@ -414,4 +414,42 @@ public class Prefabs {
 
         return turtle;
     }
+
+    public static GameObject generateFlagTop() {
+        Spritesheet sprites = AssetPool.getSpritesheet("items.png");
+        GameObject flagTop = generateSpriteObject(sprites.getSprite(6), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Static);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        flagTop.addComponent(rb);
+
+        Box2DCollider box2DCollider = new Box2DCollider();
+        box2DCollider.setHalfSize(new Vector2f(0.1f, 0.25f));
+        box2DCollider.setOffset(new Vector2f(-0.075f, 0.0f));
+        flagTop.addComponent(box2DCollider);
+        flagTop.addComponent(new Flagpole(true));
+
+        return flagTop;
+    }
+
+    public static GameObject generateFlagpole() {
+        Spritesheet sprites = AssetPool.getSpritesheet("items.png");
+        GameObject flagpole = generateSpriteObject(sprites.getSprite(33), 0.25f, 0.25f);
+
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Static);
+        rb.setMass(0.1f);
+        rb.setFixedRotation(true);
+        flagpole.addComponent(rb);
+
+        Box2DCollider box2DCollider = new Box2DCollider();
+        box2DCollider.setHalfSize(new Vector2f(0.1f, 0.25f));
+        box2DCollider.setOffset(new Vector2f(-0.075f, 0.0f));
+        flagpole.addComponent(box2DCollider);
+        flagpole.addComponent(new Flagpole(false));
+
+        return flagpole;
+    }
 }
