@@ -12,11 +12,7 @@ public class BlockCoin extends Component {
     @Override
     public void start() {
         topY = new Vector2f(this.gameObject.transform.position.y).add(0, 0.5f);
-        Sound s = AssetPool.getSound("coin.ogg");
-        if(s.isPlaying()) {
-            s.stop();
-        }
-        s.play();
+        AssetPool.getSound("coin.ogg").stopAndPlay();
     }
 
     @Override

@@ -472,4 +472,32 @@ public class Prefabs {
 
         return fireball;
     }
+
+    public static GameObject generateCoin() {
+        Spritesheet items = AssetPool.getSpritesheet("items.png");
+        GameObject coin = generateSpriteObject(items.getSprite(7), 0.25f, 0.25f);
+
+        AnimationState coinFlip = new AnimationState();
+        coinFlip.title = "CoinFlip";
+        float defaultFrameTime = 0.23f;
+        coinFlip.addFrame(items.getSprite(7), 0.57f);
+        coinFlip.addFrame(items.getSprite(8), defaultFrameTime);
+        coinFlip.addFrame(items.getSprite(9), defaultFrameTime);
+        coinFlip.setLoop(true);
+
+        StateMachine stateMachine = new StateMachine();
+        stateMachine.addState(coinFlip);
+        stateMachine.setDefaultState(coinFlip.title);
+        coin.addComponent(stateMachine);
+        coin.addComponent(new Coin());
+
+        CircleCollider circleCollider = new CircleCollider();
+        circleCollider.setRadius(0.12f);
+        coin.addComponent(circleCollider);
+        RigidBody2D rb = new RigidBody2D();
+        rb.setBodyType(BodyType.Static);
+        coin.addComponent(rb);
+
+        return coin;
+    }
 }

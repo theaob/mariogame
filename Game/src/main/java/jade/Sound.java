@@ -97,5 +97,10 @@ public class Sound {
         return isPlaying;
     }
 
-    //TODO: add play if not playing function
+    public void stopAndPlay() {
+        if(isPlaying) {
+            stop();
+        }
+       play();
+    }
 }
