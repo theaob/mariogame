@@ -90,7 +90,14 @@ public class TurtleAI extends Component {
     }
 
     @Override
-    public void beginCollision(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
+    public void preSolve(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
+        GoombaAI goomba = collidingObject.getComponent(GoombaAI.class);
+        if (isDead && isMoving && goomba != null) {
+            goomba.stomp(false);
+            contact.setEnabled(false);
+            AssetPool.getSound("kick.ogg").play();
+        }
+
         PlayerController playerController = collidingObject.getComponent(PlayerController.class);
         if (playerController != null) {
             if (!isDead && !playerController.isDead() &&
@@ -103,6 +110,9 @@ public class TurtleAI extends Component {
                     !playerController.isHurtInvincible() &&
                     (isMoving || !isDead) && hitNormal.y < 0.58f) {
                 playerController.die();
+                if (!playerController.isDead()) {
+                    contact.setEnabled(false);
+                }
             } else if (!playerController.isDead() && !playerController.isHurtInvincible()) {
                 if (isDead && hitNormal.y > 0.58f) {
                     playerController.enemyBounce();
@@ -113,6 +123,8 @@ public class TurtleAI extends Component {
                     goingRight = hitNormal.x < 0;
                     movingDebounce = 0.32f;
                 }
+            } else if (!playerController.isDead() && playerController.isHurtInvincible()) {
+                contact.setEnabled(false);
             }
         } else if (Math.abs(hitNormal.y) < 0.1f && !collidingObject.isDead()) {
             goingRight = hitNormal.x < 0;
@@ -125,16 +137,6 @@ public class TurtleAI extends Component {
         if (fb != null) {
             stomp();
             fb.disappear();
-        }
-    }
-
-    @Override
-    public void preSolve(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
-        GoombaAI goomba = collidingObject.getComponent(GoombaAI.class);
-        if (isDead && isMoving && goomba != null) {
-            goomba.stomp(false);
-            contact.setEnabled(false);
-            AssetPool.getSound("kick.ogg").play();
         }
     }
 }

@@ -302,7 +302,7 @@ public class PlayerController extends Component {
             if (pb != null) {
                 jumpBoost /= bigJumpBoostFactor;
                 walkSpeed /= bigJumpBoostFactor;
-                pb.setHeight(0.31f);
+                pb.setHeight(0.25f);
             }
 
             hurtInvincibilityTimeLeft = hurtInvincibilityTime;

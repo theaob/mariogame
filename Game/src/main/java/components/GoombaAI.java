@@ -74,7 +74,7 @@ public class GoombaAI extends Component {
     }
 
     @Override
-    public void beginCollision(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
+    public void preSolve(GameObject collidingObject, Contact contact, Vector2f hitNormal) {
         if (isDead) {
             return;
         }
@@ -89,6 +89,11 @@ public class GoombaAI extends Component {
                 stomp();
             } else if (!playerController.isDead() && !playerController.isInvincible()) {
                 playerController.die();
+                if(!playerController.isDead()) {
+                    contact.setEnabled(false);
+                }
+            } else if(!playerController.isDead() && playerController.isInvincible()) {
+                contact.setEnabled(false);
             }
         } else if (Math.abs(hitNormal.y) < 0.1f) {
             goingRight = hitNormal.x < 0;
