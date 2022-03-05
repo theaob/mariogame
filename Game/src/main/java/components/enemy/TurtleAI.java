@@ -70,12 +70,7 @@ public class TurtleAI extends Component {
         this.velocity.y = Math.max(Math.min(this.velocity.y, this.terminalVelocity.y), -terminalVelocity.y);
         this.rb.setVelocity(this.velocity);
 
-
-        if (this.gameObject.transform.position.x <
-                Window.getScene().getCamera().position.x - 0.5f) {
-            //TODO: Destroy if Turtle falls of the world
-            this.gameObject.destroy();
-        }
+        //TODO: Destroy if Turtle falls of the world
     }
 
     public void checkOnGround() {
