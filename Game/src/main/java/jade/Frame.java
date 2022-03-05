@@ -1,4 +1,6 @@
-package components;
+package jade;
+
+import jade.Sprite;
 
 public class Frame {
     public Sprite sprite;

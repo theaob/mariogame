@@ -1,5 +1,6 @@
-package components;
+package components.editor;
 
+import components.Component;
 import jade.Camera;
 import jade.Window;
 import org.joml.Vector2f;

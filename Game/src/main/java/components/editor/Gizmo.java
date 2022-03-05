@@ -1,5 +1,8 @@
-package components;
+package components.editor;
 
+import components.Component;
+import jade.Sprite;
+import components.SpriteRenderer;
 import editor.PropertiesWindow;
 import jade.*;
 import org.joml.Vector2f;

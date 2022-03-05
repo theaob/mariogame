@@ -1,5 +1,7 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.GameObject;
 import jade.Window;
 import org.jbox2d.dynamics.contacts.Contact;

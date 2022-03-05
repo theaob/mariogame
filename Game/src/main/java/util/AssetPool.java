@@ -1,6 +1,6 @@
 package util;
 
-import components.Spritesheet;
+import jade.Spritesheet;
 import jade.Sound;
 import renderer.Shader;
 import renderer.Texture;

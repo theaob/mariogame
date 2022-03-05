@@ -1,5 +1,10 @@
-package components;
+package components.player;
 
+import components.Component;
+import components.SpriteRenderer;
+import components.StateMachine;
+import components.item.Fireball;
+import components.item.Ground;
 import jade.GameObject;
 import jade.KeyListener;
 import jade.Prefabs;

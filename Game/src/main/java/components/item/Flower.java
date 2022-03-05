@@ -1,12 +1,14 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.GameObject;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import physics2d.components.RigidBody2D;
 import util.AssetPool;
 
-public class Flower extends Component{
+public class Flower extends Component {
     private transient RigidBody2D rb;
 
     @Override

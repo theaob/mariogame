@@ -1,4 +1,4 @@
-package components;
+package components.item;
 
 public enum BlockType {
     Coin,

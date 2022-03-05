@@ -1,5 +1,7 @@
-package components;
+package components.editor;
 
+import components.Component;
+import jade.Spritesheet;
 import jade.KeyListener;
 import jade.Window;
 

@@ -1,5 +1,6 @@
 package components;
 
+import components.editor.NonPickable;
 import editor.PropertiesWindow;
 import jade.GameObject;
 import jade.KeyListener;

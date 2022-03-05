@@ -1,6 +1,10 @@
 package jade;
 
 import components.*;
+import components.enemy.GoombaAI;
+import components.enemy.TurtleAI;
+import components.item.*;
+import components.player.PlayerController;
 import org.joml.Vector2f;
 import physics2d.components.Box2DCollider;
 import physics2d.components.CircleCollider;

@@ -1,5 +1,7 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.Direction;
 import jade.GameObject;
 import jade.KeyListener;

@@ -1,5 +1,9 @@
-package components;
+package components.enemy;
 
+import components.Component;
+import components.player.PlayerController;
+import components.StateMachine;
+import components.item.Fireball;
 import jade.Camera;
 import jade.GameObject;
 import jade.Window;

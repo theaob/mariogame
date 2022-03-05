@@ -1,12 +1,13 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.GameObject;
-import jade.Sound;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 import util.AssetPool;
 
-public class Coin extends Component{
+public class Coin extends Component {
     private Vector2f topY;
     private float coinSpeed = 1.4f;
     private transient boolean playAnimation = false;

@@ -1,7 +1,9 @@
-package components;
+package components.editor;
 
+import components.editor.Gizmo;
 import editor.PropertiesWindow;
 import jade.MouseListener;
+import jade.Sprite;
 
 public class TranslateGizmo extends Gizmo {
 

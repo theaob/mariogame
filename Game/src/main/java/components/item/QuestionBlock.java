@@ -1,12 +1,10 @@
-package components;
+package components.item;
 
+import components.player.PlayerController;
+import components.StateMachine;
 import jade.GameObject;
 import jade.Prefabs;
-import jade.Sound;
 import jade.Window;
-import util.AssetPool;
-
-import javax.swing.plaf.nimbus.State;
 
 public class QuestionBlock extends Block {
 
@@ -15,7 +13,7 @@ public class QuestionBlock extends Block {
     private boolean multipleHit = true;
 
     @Override
-    void playerHit(PlayerController playerController) {
+    public void playerHit(PlayerController playerController) {
         switch (blockType) {
             case Coin -> {
                 doCoin(playerController);

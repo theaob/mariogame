@@ -2,6 +2,7 @@ package scenes;
 
 import components.*;
 import jade.GameObject;
+import jade.Spritesheet;
 import util.AssetPool;
 
 import java.io.File;

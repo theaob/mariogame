@@ -1,9 +1,11 @@
-package components;
+package components.editor;
 
+import components.editor.Gizmo;
 import editor.PropertiesWindow;
 import jade.MouseListener;
+import jade.Sprite;
 
-public class ScaleGizmo extends Gizmo{
+public class ScaleGizmo extends Gizmo {
     public ScaleGizmo(Sprite scaleSprite, PropertiesWindow propertiesWindow) {
         super(scaleSprite, propertiesWindow);
     }

@@ -1,4 +1,4 @@
-package components;
+package components.player;
 
 public enum PlayerState {
     Small,

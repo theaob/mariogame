@@ -1,5 +1,7 @@
-package components;
+package jade;
 
+import jade.Frame;
+import jade.Sprite;
 import util.AssetPool;
 
 import java.util.ArrayList;

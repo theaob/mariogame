@@ -3,6 +3,8 @@ package components;
 import imgui.ImGui;
 import imgui.type.ImBoolean;
 import imgui.type.ImString;
+import jade.AnimationState;
+import jade.Frame;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,5 +1,7 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.GameObject;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
@@ -53,5 +55,5 @@ public abstract class Block extends Component {
         this.active = false;
     }
 
-    abstract void playerHit(PlayerController playerController);
+    public abstract void playerHit(PlayerController playerController);
 }

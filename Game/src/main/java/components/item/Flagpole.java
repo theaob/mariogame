@@ -1,10 +1,12 @@
-package components;
+package components.item;
 
+import components.Component;
+import components.player.PlayerController;
 import jade.GameObject;
 import org.jbox2d.dynamics.contacts.Contact;
 import org.joml.Vector2f;
 
-public class Flagpole extends Component{
+public class Flagpole extends Component {
     private boolean isTop = false;
 
     public Flagpole(boolean isTop) {

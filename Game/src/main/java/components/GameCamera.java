@@ -1,5 +1,6 @@
 package components;
 
+import components.player.PlayerController;
 import jade.Camera;
 import jade.GameObject;
 import jade.Window;

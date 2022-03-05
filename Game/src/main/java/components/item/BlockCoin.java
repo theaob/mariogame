@@ -1,7 +1,7 @@
-package components;
+package components.item;
 
 
-import jade.Sound;
+import components.Component;
 import org.joml.Vector2f;
 import util.AssetPool;
 

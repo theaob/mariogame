@@ -1,5 +1,6 @@
-package components;
+package jade;
 
+import jade.Sprite;
 import org.joml.Vector2f;
 import renderer.Texture;
 
